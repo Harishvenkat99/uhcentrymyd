@@ -469,7 +469,7 @@
 <header class="top">
   <div class="badge-count"><span class="n" id="entryCount">0</span>entries</div>
   <h1>HWC-HSC Daily Reporting</h1>
-  <p class="sub">Mayiladuthurai Urban Health Centre</p>
+  <p class="sub" id="headerSub">Mayiladuthurai Urban Health Centre</p>
 </header>
 
 <main>
@@ -1014,6 +1014,8 @@
   <button class="btn-ghost" onclick="resetForm()">Reset Form</button>
 </div>
 
+<div id="adminOnlySection">
+
 <div class="entries">
   <h3 id="entriesHeading">Today's Entries — select a facility</h3>
   <div id="entryList"></div>
@@ -1032,6 +1034,8 @@
   </div>
   <div id="reportOutput"></div>
 </div>
+
+</div><!-- /#adminOnlySection -->
 
 <footer class="note">Data is saved to the shared district database and visible to all approved staff.</footer>
 
@@ -1206,6 +1210,10 @@ window.onUserActive = function(){
   if(clearBtn) clearBtn.style.display = window.isAdmin ? '' : 'none';
   const adminLink = document.getElementById('adminPanelLink');
   if(adminLink) adminLink.style.display = window.isAdmin ? '' : 'none';
+  const headerSub = document.getElementById('headerSub');
+  if(headerSub) headerSub.style.display = window.isAdmin ? '' : 'none';
+  const adminOnlySection = document.getElementById('adminOnlySection');
+  if(adminOnlySection) adminOnlySection.style.display = window.isAdmin ? '' : 'none';
 };
 
 async function saveEntry(){
