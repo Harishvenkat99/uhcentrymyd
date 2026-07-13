@@ -1223,6 +1223,11 @@ async function saveEntry(){
     showToast('Select Block, PHC and HWC/HSC first');
     return;
   }
+  const dateInput = document.getElementById('pDate');
+  if(!dateInput.value || dateInput.value < dateInput.min || dateInput.value > dateInput.max){
+    showToast('Date must be today or yesterday');
+    return;
+  }
   const entry = collectFormData();
   try{
     await window.fbAddEntry(entry);
@@ -1385,10 +1390,23 @@ function showToast(msg){
 }
 
 /* ---------- init ---------- */
+function toDateStr(d){
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
 document.addEventListener('DOMContentLoaded', ()=>{
   populateBlocks();
   initPills();
-  document.getElementById('pDate').valueAsDate = new Date();
+  const today = new Date();
+  const yesterday = new Date();
+  yesterday.setDate(today.getDate() - 1);
+  const dateInput = document.getElementById('pDate');
+  dateInput.min = toDateStr(yesterday);
+  dateInput.max = toDateStr(today);
+  dateInput.valueAsDate = today;
   renderEntries();
   document.getElementById('reportOutput').innerHTML = '<div class="empty-note">Choose Block-wise, PHC-wise, or HSC-wise above to view a summary.</div>';
 });
