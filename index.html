@@ -1188,6 +1188,8 @@ function clearFormFields(){
     if(el) el.value = '';
   });
   RADIO_GROUPS.forEach(name=> setRadioValue(name, ''));
+  const dateInput = document.getElementById('pDate');
+  if(dateInput) dateInput.valueAsDate = new Date();
 }
 
 /* ---------- storage (Firestore-backed) ---------- */
@@ -1225,7 +1227,7 @@ async function saveEntry(){
   }
   const dateInput = document.getElementById('pDate');
   if(!dateInput.value || dateInput.value < dateInput.min || dateInput.value > dateInput.max){
-    showToast('Date must be today or yesterday');
+    showToast('You can only submit entries for today or yesterday.');
     return;
   }
   const entry = collectFormData();
