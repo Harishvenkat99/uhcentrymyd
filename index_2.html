@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>HWC-HSC Daily Report — Mayiladuthurai UHC</title>
+<style>
+  :root{
+    --ink:#12312b;
+    --paper:#f6f8f6;
+    --card:#ffffff;
+    --line:#d9e2dc;
+    --teal:#0f6d5c;
+    --teal-dark:#0a4f43;
+    --teal-light:#e6f3f0;
+    --amber:#c8791a;
+    --red:#b93b3b;
+    --muted:#5f7a72;
+    --shadow: 0 1px 2px rgba(15,109,92,.06), 0 6px 20px rgba(15,109,92,.06);
+    --radius: 14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 500px at 100% -10%, #e9f4f0 0%, transparent 60%),
+      var(--paper);
+    color:var(--ink);
+    font-family: "Segoe UI", "Noto Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height:1.4;
+    padding-bottom:100px;
+  }
+  header.top{
+    background: linear-gradient(135deg, var(--teal-dark), var(--teal) 70%);
+    color:#fff;
+    padding:22px 18px 26px;
+    border-radius:0 0 22px 22px;
+    box-shadow: var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+  header.top::after{
+    content:"";
+    position:absolute; right:-40px; top:-40px; width:180px; height:180px;
+    border-radius:50%;
+    background: rgba(255,255,255,.08);
+  }
+  header.top h1{
+    margin:0 0 2px;
+    font-size:1.32rem;
+    font-weight:700;
+    letter-spacing:.2px;
+  }
+  header.top p.sub{
+    margin:0;
+    font-size:.85rem;
+    opacity:.9;
+  }
+  .badge-count{
+    position:absolute; right:18px; top:20px;
+    background:rgba(255,255,255,.16);
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:999px;
+    padding:6px 14px;
+    font-size:.75rem;
+    font-weight:600;
+    text-align:center;
+    min-width:52px;
+  }
+  .badge-count .n{ display:block; font-size:1.1rem; line-height:1; }
+
+  main{ max-width:720px; margin:0 auto; padding:16px 14px 0; }
+
+  .step{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom:14px;
+    box-shadow: var(--shadow);
+    overflow:hidden;
+  }
+  .step-head{
+    display:flex; align-items:center; gap:12px;
+    padding:14px 16px;
+    cursor:pointer;
+    user-select:none;
+  }
+  .step-num{
+    flex:0 0 auto;
+    width:30px; height:30px;
+    border-radius:9px;
+    background:var(--teal-light);
+    color:var(--teal-dark);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:.95rem;
+  }
+  .step-head .titles{ flex:1; }
+  .step-head h2{ margin:0; font-size:1rem; font-weight:700; }
+  .step-head p{ margin:1px 0 0; font-size:.78rem; color:var(--muted); }
+  .chev{ color:var(--muted); font-size:.8rem; transition:transform .2s ease; }
+  .step.collapsed .chev{ transform:rotate(-90deg); }
+  .step-body{
+    padding:0 16px 16px;
+    display:grid; grid-template-columns:1fr 1fr; gap:12px 12px;
+  }
+  .step.collapsed .step-body{ display:none; }
+  .step-body.single{ grid-template-columns:1fr; }
+
+  .field{ display:flex; flex-direction:column; gap:5px; }
+  .field.full{ grid-column: 1 / -1; }
+  .field label{
+    font-size:.76rem; font-weight:600; color:var(--teal-dark);
+    letter-spacing:.2px;
+  }
+  .field label .req{ color:var(--red); margin-left:2px; }
+  .field label .opt{ color:var(--muted); font-weight:500; }
+
+  input[type=text], input[type=tel], input[type=number], input[type=date], select, textarea{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:9px 10px;
+    font-size:.88rem;
+    background:#fcfdfc;
+    color:var(--ink);
+    font-family:inherit;
+    width:100%;
+  }
+  input:focus, select:focus, textarea:focus{
+    outline:2px solid var(--teal);
+    outline-offset:1px;
+    border-color:var(--teal);
+  }
+  select:disabled, input:disabled{ background:#eef1ef; color:var(--muted); cursor:not-allowed; }
+
+  fieldset.pillgroup{
+    border:none; margin:0; padding:0;
+    display:flex; flex-wrap:wrap; gap:6px;
+  }
+  fieldset.pillgroup legend{ display:none; }
+  .pill{
+    border:1px solid var(--line);
+    background:#fcfdfc;
+    border-radius:999px;
+    padding:6px 12px;
+    font-size:.8rem;
+    cursor:pointer;
+    color:var(--ink);
+  }
+  .pill input{ display:none; }
+  .pill.active{
+    background:var(--teal);
+    border-color:var(--teal);
+    color:#fff;
+    font-weight:600;
+  }
+  .subhead{
+    grid-column:1/-1;
+    font-size:.78rem;
+    font-weight:700;
+    color:var(--teal-dark);
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    border-top:1px dashed var(--line);
+    padding-top:10px;
+    margin-top:2px;
+  }
+  .subhead:first-child{ border-top:none; padding-top:0; margin-top:0; }
+  .qty-row{ display:flex; gap:8px; }
+  .qty-row select{ flex:2; }
+  .qty-row input{ flex:1; }
+
+  .facility-note{
+    grid-column:1/-1;
+    font-size:.78rem; color:var(--muted);
+    background:var(--teal-light);
+    border-radius:10px; padding:9px 11px;
+  }
+
+  .actions{
+    max-width:720px; margin:18px auto 0; padding:0 14px;
+    display:flex; gap:10px; flex-wrap:wrap;
+  }
+  button{
+    font-family:inherit; font-size:.88rem; font-weight:700;
+    border-radius:12px; padding:12px 16px; border:1px solid transparent;
+    cursor:pointer;
+  }
+  .btn-primary{ background:var(--teal); color:#fff; flex:1 1 160px; box-shadow:var(--shadow); }
+  .btn-primary:hover{ background:var(--teal-dark); }
+  .btn-ghost{ background:#fff; color:var(--ink); border-color:var(--line); flex:1 1 130px; }
+  .btn-danger{ background:#fff; color:var(--red); border-color:#f0c9c9; flex:1 1 130px; }
+  .btn-amber{ background:#fff; color:var(--amber); border-color:#efd7b0; flex:1 1 130px; }
+
+  .entries{
+    max-width:720px; margin:20px auto 0; padding:0 14px;
+  }
+  .entries h3{ font-size:.95rem; margin:0 0 8px; }
+  .entry-card{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:12px 14px; margin-bottom:8px; display:flex; justify-content:space-between; gap:10px;
+    box-shadow:var(--shadow);
+  }
+  .entry-card .meta{ font-size:.78rem; color:var(--muted); }
+  .entry-card .name{ font-weight:700; font-size:.9rem; }
+  .entry-card button{ background:none; border:none; color:var(--red); font-size:.78rem; font-weight:700; cursor:pointer; padding:2px 6px; }
+  .empty-note{ font-size:.82rem; color:var(--muted); padding:10px 2px; }
+
+  .report-table{
+    width:100%; border-collapse:collapse; background:var(--card);
+    border:1px solid var(--line); border-radius:12px; overflow:hidden;
+    box-shadow:var(--shadow); font-size:.82rem;
+  }
+  .report-table th, .report-table td{
+    padding:9px 10px; text-align:left; border-bottom:1px solid var(--line);
+  }
+  .report-table th{
+    background:var(--teal-light); color:var(--teal-dark); font-weight:700;
+    font-size:.72rem; text-transform:uppercase; letter-spacing:.4px;
+  }
+  .report-table tr:last-child td{ border-bottom:none; }
+  .report-table td.num{ text-align:center; font-weight:600; }
+  .report-table tfoot td{ font-weight:700; background:#fafbfa; }
+  .btn-ghost.active-report{ background:var(--teal); color:#fff; border-color:var(--teal); }
+
+  footer.note{
+    max-width:720px; margin:22px auto 40px; padding:0 14px;
+    font-size:.74rem; color:var(--muted); text-align:center;
+  }
+  .toast{
+    position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px);
+    background:var(--teal-dark); color:#fff; padding:10px 18px; border-radius:999px;
+    font-size:.85rem; font-weight:600; opacity:0; transition:all .25s ease; pointer-events:none;
+    box-shadow:0 8px 24px rgba(0,0,0,.2);
+    z-index:50;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  @media (max-width:520px){
+    .step-body{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="badge-count"><span class="n" id="entryCount">0</span>entries</div>
+  <h1>HWC-HSC Daily Reporting</h1>
+  <p class="sub">Mayiladuthurai Urban Health Centre</p>
+</header>
+
+<main>
+
+  <!-- STEP 0: FACILITY -->
+  <section class="step" data-step="0">
+    <div class="step-head" onclick="toggleStep(this)">
+      <div class="step-num">0</div>
+      <div class="titles">
+        <h2>Facility</h2>
+        <p>Block, PHC and HWC / HSC</p>
+      </div>
+      <div class="chev">▾</div>
+    </div>
+    <div class="step-body single">
+      <div class="field">
+        <label for="blockSelect">Block <span class="req">*</span></label>
+        <select id="blockSelect" onchange="onBlockChange()">
+          <option value="">Select Block</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="phcSelect">PHC <span class="req">*</span></label>
+        <select id="phcSelect" onchange="onPhcChange()" disabled>
+          <option value="">Select Block first</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="hscSelect">HWC / HSC Name <span class="req">*</span></label>
+        <select id="hscSelect" disabled>
+          <option value="">Select PHC first</option>
+        </select>
+      </div>
+      <div class="facility-note">This form mirrors the "HWC-HSCs: Daily Reporting Format" sheet — choose Block, then PHC, then HWC/HSC. Fields marked * are required.</div>
+    </div>
+  </section>
+
+  <!-- STEP 1: PATIENT DETAILS -->
+  <section class="step" data-step="1">
+    <div class="step-head" onclick="toggleStep(this)">
+      <div class="step-num">1</div>
+      <div class="titles">
+        <h2>Patient Details</h2>
+        <p>Date, name, phone, gender, type</p>
+      </div>
+      <div class="chev">▾</div>
+    </div>
+    <div class="step-body">
+      <div class="field">
+        <label for="pDate">Date <span class="req">*</span></label>
+        <input type="date" id="pDate">
+      </div>
+      <div class="field">
+        <label for="pGender">Gender</label>
+        <select id="pGender">
+          <option value="">Select</option>
+          <option>Male</option>
+          <option>Female</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="pName">Patient Name</label>
+        <input type="text" id="pName" placeholder="Patient name">
+      </div>
+      <div class="field">
+        <label for="pPhone">Phone Number</label>
+        <input type="tel" id="pPhone" placeholder="10-digit number">
+      </div>
+      <div class="field full">
+        <label for="pType">Type of Patient</label>
+        <select id="pType">
+          <option value="">Select</option>
+          <option>Pregnancy (ANC)</option>
+          <option>Delivered Mother (PNC)</option>
+          <option>Child</option>
+          <option>Adolescent</option>
+          <option>Adults</option>
+          <option>Geriatric</option>
+          <option>Physiotherapy</option>
+          <option>Palliative</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2: CONSULTATION -->
+  <section class="step" data-step="2">
+    <div class="step-head" onclick="toggleStep(this)">
+      <div class="step-num">2</div>
+      <div class="titles">
+        <h2>Consultation &amp; Portal Entry</h2>
+        <p>Performance details</p>
+      </div>
+      <div class="chev">▾</div>
+    </div>
+    <div class="step-body">
+      <div class="field full">
+        <label for="consultType">Type of Consultation</label>
+        <select id="consultType">
+          <option value="">Select</option>
+          <option>MLHP</option>
+          <option>eSanjeevani</option>
+        </select>
+      </div>
+      <div class="subhead">Details entered in portal</div>
+      <div class="field">
+        <label>AAM Portal</label>
+        <fieldset class="pillgroup" data-name="aamPortal"><legend>AAM Portal</legend>
+          <label class="pill"><input type="radio" name="aamPortal" value="Positive">Positive</label>
+          <label class="pill"><input type="radio" name="aamPortal" value="Negative">Negative</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>PICME</label>
+        <fieldset class="pillgroup" data-name="picme"><legend>PICME</legend>
+          <label class="pill"><input type="radio" name="picme" value="Positive">Positive</label>
+          <label class="pill"><input type="radio" name="picme" value="Negative">Negative</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>MTM</label>
+        <fieldset class="pillgroup" data-name="mtm"><legend>MTM</legend>
+          <label class="pill"><input type="radio" name="mtm" value="Positive">Positive</label>
+          <label class="pill"><input type="radio" name="mtm" value="Negative">Negative</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>HMIS</label>
+        <fieldset class="pillgroup" data-name="hmis"><legend>HMIS</legend>
+          <label class="pill"><input type="radio" name="hmis" value="Positive">Positive</label>
+          <label class="pill"><input type="radio" name="hmis" value="Negative">Negative</label>
+        </fieldset>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3: SYMPTOMS / INJURY / EMERGENCY -->
+  <section class="step" data-step="3">
+    <div class="step-head" onclick="toggleStep(this)">
+      <div class="step-num">3</div>
+      <div class="titles">
+        <h2>Symptoms, Injury &amp; Emergency</h2>
+        <p>Fever, eye/ENT, dog bite, injury</p>
+      </div>
+      <div class="chev">▾</div>
+    </div>
+    <div class="step-body">
+      <div class="field">
+        <label>Fever</label>
+        <select id="fever">
+          <option value="">—</option>
+          <option>Fever</option>
+          <option>Fever with cough</option>
+          <option>Fever with Rash</option>
+          <option>Fever with severe myalgia</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Mental Health Illness — Follow-up</label>
+        <fieldset class="pillgroup" data-name="mentalHealthFollowup"><legend>Mental Health Follow-up</legend>
+          <label class="pill"><input type="radio" name="mentalHealthFollowup" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="mentalHealthFollowup" value="No">No</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>Eye</label>
+        <select id="eye">
+          <option value="">—</option>
+          <option>Red Eye</option>
+          <option>Watering Eye</option>
+          <option>Pain Eye</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Ear / Nose / Throat</label>
+        <select id="ent">
+          <option value="">—</option>
+          <option>Ear Pain</option>
+          <option>Ear Discharge</option>
+          <option>Foreign Body</option>
+          <option>Wax Pain</option>
+        </select>
+      </div>
+      <div class="field full">
+        <label for="symptomOther">Other <span class="opt">(diagnosis not listed above)</span></label>
+        <input type="text" id="symptomOther" placeholder="Enter other diagnosis">
+      </div>
+
+      <div class="subhead">Dog Bite Case</div>
+
+      <div class="field">
+        <label>Category Attended</label>
+        <select id="dogCategory">
+          <option value="">—</option>
+          <option>Category 1</option>
+          <option>Category 2</option>
+          <option>Category 3</option>
+          <option>Category 4</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>ARV Given</label>
+        <select id="arvGiven">
+          <option value="">—</option>
+          <option>1st Dose</option>
+          <option>2nd Dose</option>
+          <option>3rd Dose</option>
+          <option>4th Dose</option>
+        </select>
+      </div>
+
+      <div class="subhead">Injury / Emergency</div>
+      <div class="field">
+        <label>Injury / Emergency Type</label>
+        <select id="injuryType">
+          <option value="">—</option>
+          <option>Injury</option>
+          <option>Poisoning</option>
+          <option>Snake Bite</option>
+          <option>Insect bite</option>
+          <option>Scorpion Sting</option>
+          <option>Burns</option>
+          <option>Chest Pain</option>
+          <option>Diarrhea</option>
+          <option>Voimiting</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Emergency case given Inj.Td</label>
+        <fieldset class="pillgroup" data-name="injTd"><legend>Inj.Td</legend>
+          <label class="pill"><input type="radio" name="injTd" value="Positive">Positive</label>
+          <label class="pill"><input type="radio" name="injTd" value="Negative">Negative</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>Cardiac case — loading dose &amp; referred</label>
+        <fieldset class="pillgroup" data-name="cardiacCase"><legend>Cardiac case</legend>
+          <label class="pill"><input type="radio" name="cardiacCase" value="Positive">Positive</label>
+          <label class="pill"><input type="radio" name="cardiacCase" value="Negative">Negative</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>Emergency case referred to higher facility</label>
+        <fieldset class="pillgroup" data-name="emergencyReferred"><legend>Emergency referred</legend>
+          <label class="pill"><input type="radio" name="emergencyReferred" value="Positive">Positive</label>
+          <label class="pill"><input type="radio" name="emergencyReferred" value="Negative">Negative</label>
+        </fieldset>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 4: NCD & CANCER SCREENING -->
+  <section class="step" data-step="4">
+    <div class="step-head" onclick="toggleStep(this)">
+      <div class="step-num">4</div>
+      <div class="titles">
+        <h2>NCD &amp; Cancer Screening</h2>
+        <p>HT/DM screening, oral/breast/cervical</p>
+      </div>
+      <div class="chev">▾</div>
+    </div>
+    <div class="step-body">
+      <div class="field">
+        <label>NCD Screening</label>
+        <select id="ncdScreening">
+          <option value="">—</option>
+          <option>HT</option>
+          <option>DM</option>
+          <option>Both</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>NCD Follow-up</label>
+        <select id="ncdFollowup">
+          <option value="">—</option>
+          <option>HT</option>
+          <option>DM</option>
+          <option>Both</option>
+        </select>
+      </div>
+      <div class="subhead">Cancer Screening</div>
+      <div class="field">
+        <label>Method</label>
+        <select id="cancerMethod">
+          <option value="">—</option>
+          <option>Oral</option>
+          <option>SBE</option>
+          <option>VIA</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Screening Result</label>
+        <fieldset class="pillgroup" data-name="cancerResult"><legend>Screening Result</legend>
+          <label class="pill"><input type="radio" name="cancerResult" value="Positive">Positive</label>
+          <label class="pill"><input type="radio" name="cancerResult" value="Negative">Negative</label>
+        </fieldset>
+      </div>
+      <div class="field full">
+        <label>Entered in MTM Portal</label>
+        <fieldset class="pillgroup" data-name="cancerMtmPortal"><legend>Entered in MTM Portal</legend>
+          <label class="pill"><input type="radio" name="cancerMtmPortal" value="Positive">Positive</label>
+          <label class="pill"><input type="radio" name="cancerMtmPortal" value="Negative">Negative</label>
+        </fieldset>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 5: VITALS & DIAGNOSTICS -->
+  <section class="step" data-step="5">
+    <div class="step-head" onclick="toggleStep(this)">
+      <div class="step-num">5</div>
+      <div class="titles">
+        <h2>Vital Signs &amp; Diagnostics</h2>
+        <p>BP, Hb, blood sugar, urine tests</p>
+      </div>
+      <div class="chev">▾</div>
+    </div>
+    <div class="step-body">
+      <div class="subhead">Vital Signs</div>
+      <div class="field">
+        <label>Blood Pressure</label>
+        <input type="text" id="bp" placeholder="e.g. 120/80">
+      </div>
+      <div class="field">
+        <label>Temp (°F)</label>
+        <input type="number" step="0.1" id="temp">
+      </div>
+      <div class="field">
+        <label>SpO2 (%)</label>
+        <input type="number" id="spo2">
+      </div>
+
+      <div class="subhead">Diagnostics</div>
+      <div class="field">
+        <label>Urine Pregnancy Test</label>
+        <fieldset class="pillgroup" data-name="upt"><legend>UPT</legend>
+          <label class="pill"><input type="radio" name="upt" value="Positive">Positive</label>
+          <label class="pill"><input type="radio" name="upt" value="Negative">Negative</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>Hemoglobin — Value</label>
+        <input type="number" step="0.1" id="hbValue">
+      </div>
+      <div class="field">
+        <label>Anemia</label>
+        <select id="anemia">
+          <option value="">—</option>
+          <option>Mild (11 to 11.9)</option>
+          <option>Moderate (8 to 10.9)</option>
+          <option>Severe (&lt;8)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Blood Sugar — Value</label>
+        <input type="number" id="bloodSugar">
+      </div>
+      <div class="field">
+        <label>Urine Albumin</label>
+        <fieldset class="pillgroup" data-name="urineAlbumin"><legend>Urine Albumin</legend>
+          <label class="pill"><input type="radio" name="urineAlbumin" value="Positive">Positive</label>
+          <label class="pill"><input type="radio" name="urineAlbumin" value="Negative">Negative</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>Urine Sugar</label>
+        <select id="urineSugar">
+          <option value="">—</option>
+          <option>+</option>
+          <option>++</option>
+          <option>+++</option>
+          <option>++++</option>
+        </select>
+      </div>
+
+      <div class="subhead">For AN Pregnant Mothers</div>
+      <div class="field">
+        <label>HIV Test</label>
+        <fieldset class="pillgroup" data-name="hiv"><legend>HIV</legend>
+          <label class="pill"><input type="radio" name="hiv" value="Positive">Positive</label>
+          <label class="pill"><input type="radio" name="hiv" value="Negative">Negative</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>HbsAg (Hep. B)</label>
+        <fieldset class="pillgroup" data-name="hbsag"><legend>HbsAg</legend>
+          <label class="pill"><input type="radio" name="hbsag" value="Positive">Positive</label>
+          <label class="pill"><input type="radio" name="hbsag" value="Negative">Negative</label>
+        </fieldset>
+      </div>
+      <div class="field full">
+        <label>VDRL (Syphilis)</label>
+        <fieldset class="pillgroup" data-name="vdrl"><legend>VDRL</legend>
+          <label class="pill"><input type="radio" name="vdrl" value="Positive">Positive</label>
+          <label class="pill"><input type="radio" name="vdrl" value="Negative">Negative</label>
+        </fieldset>
+      </div>
+
+      <div class="subhead">Investigations — UHC MPHW (Health Inspector) Grade-II</div>
+      <div class="field">
+        <label>Iodine in Salt — tests done</label>
+        <input type="number" id="iodineTests">
+      </div>
+      <div class="field">
+        <label>Water Testing — tests done</label>
+        <input type="number" id="waterTests">
+      </div>
+      <div class="field">
+        <label>Sputum for AFB</label>
+        <fieldset class="pillgroup" data-name="sputumAfb"><legend>Sputum AFB</legend>
+          <label class="pill"><input type="radio" name="sputumAfb" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="sputumAfb" value="No">No</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>Peripheral Smear — Malaria</label>
+        <fieldset class="pillgroup" data-name="peripheralSmear"><legend>Peripheral Smear</legend>
+          <label class="pill"><input type="radio" name="peripheralSmear" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="peripheralSmear" value="No">No</label>
+        </fieldset>
+      </div>
+      <div class="field full">
+        <label>Others, if any</label>
+        <input type="text" id="investigationOthers">
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 6: DRUGS DISPENSED -->
+  <section class="step" data-step="6">
+    <div class="step-head" onclick="toggleStep(this)">
+      <div class="step-num">6</div>
+      <div class="titles">
+        <h2>Drugs Dispensed</h2>
+        <p>Kit A/B, NCD, EDL, Family Welfare</p>
+      </div>
+      <div class="chev">▾</div>
+    </div>
+    <div class="step-body">
+      <div class="subhead">Kit A &amp; Kit B Drugs</div>
+      <div class="field">
+        <label>Calcium Carbonate — given to</label>
+        <div class="qty-row">
+          <select id="calciumGivenTo">
+            <option value="">—</option>
+            <option>Pregnant Mother</option>
+            <option>Delivered Mother</option>
+          </select>
+          <input type="number" id="calciumQty" placeholder="Qty">
+        </div>
+      </div>
+      <div class="field">
+        <label>IFA Large — given to</label>
+        <div class="qty-row">
+          <select id="ifaGivenTo">
+            <option value="">—</option>
+            <option>Pregnant Mother</option>
+            <option>Delivered Mother</option>
+          </select>
+          <input type="number" id="ifaQty" placeholder="Qty">
+        </div>
+      </div>
+      <div class="field">
+        <label>Junior WIFS given</label>
+        <div class="qty-row">
+          <select id="wifsGiven">
+            <option value="">—</option>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+          <input type="number" id="wifsQty" placeholder="Qty">
+        </div>
+      </div>
+      <div class="field">
+        <label>Iron Syrup given</label>
+        <div class="qty-row">
+          <select id="ironSyrupGiven">
+            <option value="">—</option>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+          <input type="number" id="ironSyrupQty" placeholder="Qty">
+        </div>
+      </div>
+      <div class="field">
+        <label>Vitamin A Syrup given</label>
+        <div class="qty-row">
+          <select id="vitAGiven">
+            <option value="">—</option>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+          <input type="number" id="vitAQty" placeholder="Qty">
+        </div>
+      </div>
+      <div class="field">
+        <label>Others — drug name</label>
+        <div class="qty-row">
+          <input type="text" id="kitOtherName" placeholder="Drug name">
+          <input type="number" id="kitOtherQty" placeholder="Qty">
+        </div>
+      </div>
+
+      <div class="subhead">NCD Drugs — No. of Tablets Given</div>
+      <div class="field"><label>Metformin</label><input type="number" id="ncdMetformin"></div>
+      <div class="field"><label>Amlodipine</label><input type="number" id="ncdAmlodipine"></div>
+      <div class="field"><label>Glimepiride</label><input type="number" id="ncdGlimepiride"></div>
+      <div class="field"><label>Glibenclamide</label><input type="number" id="ncdGlibenclamide"></div>
+      <div class="field"><label>Sitagliptin</label><input type="number" id="ncdSitagliptin"></div>
+
+      <div class="subhead">EDL Drugs</div>
+      <div class="field"><label>Norfloxacin</label><input type="number" id="edlNorfloxacin"></div>
+      <div class="field"><label>Doxycycline</label><input type="number" id="edlDoxycycline"></div>
+      <div class="field"><label>Co-trimoxazole</label><input type="number" id="edlCotrimoxazole"></div>
+      <div class="field"><label>Amoxicillin</label><input type="number" id="edlAmoxicillin"></div>
+      <div class="field"><label>Ciprofloxacin</label><input type="number" id="edlCiprofloxacin"></div>
+      <div class="field">
+        <label>Other drugs — name</label>
+        <div class="qty-row">
+          <input type="text" id="edlOtherName" placeholder="Drug name">
+          <input type="number" id="edlOtherQty" placeholder="Qty">
+        </div>
+      </div>
+
+      <div class="subhead">Family Welfare Drugs</div>
+      <div class="field full">
+        <fieldset class="pillgroup" data-name="familyWelfare"><legend>Family Welfare</legend>
+          <label class="pill"><input type="radio" name="familyWelfare" value="Chhaya">Chhaya</label>
+          <label class="pill"><input type="radio" name="familyWelfare" value="Antara">Antara</label>
+          <label class="pill"><input type="radio" name="familyWelfare" value="EC Pills">EC Pills</label>
+          <label class="pill"><input type="radio" name="familyWelfare" value="Referred for Medical Management for abortion (MMA)">Referred for MMA</label>
+          <label class="pill"><input type="radio" name="familyWelfare" value="Referred for Medical Termination of Pregnacy (MTP)">Referred for MTP</label>
+        </fieldset>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="actions">
+  <button class="btn-primary" onclick="saveEntry()">Save Entry</button>
+  <button class="btn-ghost" onclick="resetForm()">Reset Form</button>
+</div>
+
+<div class="entries">
+  <h3 id="entriesHeading">Today's Entries — select a facility</h3>
+  <div id="entryList"></div>
+  <div class="actions" style="padding:0; margin-top:6px;">
+    <button class="btn-amber" onclick="exportExcel()">⬇ Export to Excel</button>
+    <button class="btn-danger" onclick="clearAll()">🗑 Clear all entries</button>
+  </div>
+</div>
+
+<div class="entries" id="reportsPanel">
+  <h3>Reports</h3>
+  <div class="actions" style="padding:0; margin-bottom:10px;">
+    <button class="btn-ghost" id="blockReportBtn" onclick="showReport('block')">📊 Block-wise Report</button>
+    <button class="btn-ghost" id="phcReportBtn" onclick="showReport('phc')">📊 PHC-wise Report</button>
+  </div>
+  <div id="reportOutput"></div>
+</div>
+
+<footer class="note">Data is stored only on this device (browser local storage). Export regularly to back up.</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- Block > PHC > HSC hierarchy (from BLOCK_PHC_HSC_detail.xlsx) ---------- */
+const HIERARCHY = {"Kollidam": {"Edamanal": ["Umayalpathy"], "Kollidam": ["Pannangudi"], "Nallur": ["Mahendirapalli"], "Puthupattinam": ["Agaravattaram", "Thanttavangulam"], "Thirumullaivasal": ["Thoduvai"]}, "Kuttalam": {"Kiliyanur": ["Muthur"], "Komal": ["Asikadu"], "Konerirajapuram": ["Kanchivai"], "Manganallur": ["Vazhuvur"], "Mekkirimangalam": ["Pazhaiyakoodalur"]}, "Mayiladuthurai": {"Elanthoppu": ["Pattavarthi", "Sithamalli"], "Kali": ["Kodankudi", "Korukkai", "Mappadugai", "Pattamangalam"], "Manalmedu": ["Kadalangudi (Manalmed Phc)"], "Villiyanallur": ["Anathandavapuram", "Needur", "Uluthukuppai"]}, "Sembanarkovil": {"10.Keezhaiyur": ["Karuvalakkarai", "Kidarankondan", "Natham", "Pagasalai"], "Akkur": ["Akkur (Annappanpettai)", "Chinnangudi", "Erukattancherry", "Kalakasthinathapuram", "Killiyur", "Kumarakudi", "Mukkarumbur", "Poraiyar North", "Poraiyar South"], "Melaperumpallam": ["Keezhaperumpallam", "Thalachangadu"], "Sanganranpanthal": ["Eaduthukkattisathanu", "Eluppur", "Kattucherry", "Nalladai", "Neduvasal", "Thiruvilaiyattam"], "Sembanarkovil": ["Arupathi", "Elaiyalur", "Maymathur"], "Thirukadaiyur": ["Anaikoil", "Chandrapadi", "Kazhiyappanallur", "Kuttiyandiyur", "Manikkanpangu", "Pillaiperumanallur", "Sathangudi", "Thillaiyadi"]}, "Sirkali": {"Kathiruppu": ["Rathanallur"], "Thiruvengadu": ["Thiruvali"], "Valluvakudi": ["Nimmeli", "Thiruppungur"]}};
+
+const STORAGE_KEY = 'hwc_hsc_entries_v1';
+
+function populateBlocks(){
+  const sel = document.getElementById('blockSelect');
+  Object.keys(HIERARCHY).sort().forEach(block=>{
+    const opt = document.createElement('option');
+    opt.value = block; opt.textContent = block;
+    sel.appendChild(opt);
+  });
+}
+
+function onBlockChange(){
+  const block = document.getElementById('blockSelect').value;
+  const phcSel = document.getElementById('phcSelect');
+  const hscSel = document.getElementById('hscSelect');
+  phcSel.innerHTML = '';
+  hscSel.innerHTML = '<option value="">Select PHC first</option>';
+  hscSel.disabled = true;
+
+  if(!block){
+    phcSel.innerHTML = '<option value="">Select Block first</option>';
+    phcSel.disabled = true;
+    return;
+  }
+  phcSel.disabled = false;
+  phcSel.appendChild(new Option('Select PHC',''));
+  Object.keys(HIERARCHY[block]).sort().forEach(phc=>{
+    phcSel.appendChild(new Option(phc, phc));
+  });
+}
+
+function onPhcChange(){
+  const block = document.getElementById('blockSelect').value;
+  const phc = document.getElementById('phcSelect').value;
+  const hscSel = document.getElementById('hscSelect');
+  hscSel.innerHTML = '';
+  if(!phc){
+    hscSel.innerHTML = '<option value="">Select PHC first</option>';
+    hscSel.disabled = true;
+    return;
+  }
+  hscSel.disabled = false;
+  hscSel.appendChild(new Option('Select HWC / HSC',''));
+  HIERARCHY[block][phc].slice().sort().forEach(hsc=>{
+    hscSel.appendChild(new Option(hsc, hsc));
+  });
+  hscSel.onchange = updateEntriesHeading;
+}
+
+function updateEntriesHeading(){
+  const hsc = document.getElementById('hscSelect').value;
+  const phc = document.getElementById('phcSelect').value;
+  const heading = document.getElementById('entriesHeading');
+  heading.textContent = hsc ? `Today's Entries — ${hsc} (${phc})` : "Today's Entries — select a facility";
+}
+
+/* ---------- pill (radio-as-button) behaviour ---------- */
+function initPills(){
+  document.querySelectorAll('.pillgroup').forEach(group=>{
+    group.querySelectorAll('.pill').forEach(pill=>{
+      pill.addEventListener('click', ()=>{
+        const input = pill.querySelector('input');
+        const wasActive = pill.classList.contains('active');
+        group.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+        if(wasActive){
+          input.checked = false;
+        } else {
+          input.checked = true;
+          pill.classList.add('active');
+        }
+      });
+    });
+  });
+}
+
+/* ---------- collapsible steps ---------- */
+function toggleStep(headEl){
+  headEl.parentElement.classList.toggle('collapsed');
+}
+
+/* ---------- data collection ---------- */
+const FIELD_IDS = [
+  'pDate','pGender','pName','pPhone','pType',
+  'consultType',
+  'fever','eye','ent','symptomOther','dogCategory','arvGiven','injuryType',
+  'ncdScreening','ncdFollowup','cancerMethod',
+  'bp','temp','spo2','hbValue','anemia','bloodSugar','urineSugar','investigationOthers',
+  'iodineTests','waterTests',
+  'calciumGivenTo','calciumQty','ifaGivenTo','ifaQty','wifsGiven','wifsQty',
+  'ironSyrupGiven','ironSyrupQty','vitAGiven','vitAQty','kitOtherName','kitOtherQty',
+  'ncdMetformin','ncdAmlodipine','ncdGlimepiride','ncdGlibenclamide','ncdSitagliptin',
+  'edlNorfloxacin','edlDoxycycline','edlCotrimoxazole','edlAmoxicillin','edlCiprofloxacin',
+  'edlOtherName','edlOtherQty'
+];
+const RADIO_GROUPS = [
+  'aamPortal','picme','mtm','hmis','mentalHealthFollowup','injTd','cardiacCase',
+  'emergencyReferred','cancerResult','cancerMtmPortal','upt','urineAlbumin','hiv',
+  'hbsag','vdrl','sputumAfb','peripheralSmear','familyWelfare'
+];
+
+function getRadioValue(name){
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? el.value : '';
+}
+function setRadioValue(name, value){
+  const group = document.querySelector(`fieldset[data-name="${name}"]`);
+  if(!group) return;
+  group.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+  if(!value) return;
+  const input = group.querySelector(`input[value="${CSS.escape(value)}"]`);
+  if(input){
+    input.checked = true;
+    input.closest('.pill').classList.add('active');
+  }
+}
+
+function collectFormData(){
+  const data = {};
+  data.block = document.getElementById('blockSelect').value;
+  data.phc = document.getElementById('phcSelect').value;
+  data.hsc = document.getElementById('hscSelect').value;
+  FIELD_IDS.forEach(id=>{
+    const el = document.getElementById(id);
+    data[id] = el ? el.value : '';
+  });
+  RADIO_GROUPS.forEach(name=>{
+    data[name] = getRadioValue(name);
+  });
+  data.savedAt = new Date().toISOString();
+  return data;
+}
+
+function clearFormFields(){
+  FIELD_IDS.forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+  RADIO_GROUPS.forEach(name=> setRadioValue(name, ''));
+}
+
+/* ---------- storage ---------- */
+function loadEntries(){
+  try{
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  }catch(e){ return []; }
+}
+function saveEntries(list){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+}
+
+function saveEntry(){
+  if(!document.getElementById('blockSelect').value ||
+     !document.getElementById('phcSelect').value ||
+     !document.getElementById('hscSelect').value){
+    showToast('Select Block, PHC and HWC/HSC first');
+    return;
+  }
+  const entry = collectFormData();
+  const list = loadEntries();
+  list.push(entry);
+  saveEntries(list);
+  renderEntries();
+  refreshActiveReport();
+  showToast('Entry saved');
+  clearFormFields();
+}
+
+function resetForm(){
+  clearFormFields();
+  showToast('Form reset');
+}
+
+function clearAll(){
+  if(!confirm('Delete all saved entries on this device? This cannot be undone.')) return;
+  saveEntries([]);
+  renderEntries();
+  refreshActiveReport();
+  showToast('All entries cleared');
+}
+
+function deleteEntry(idx){
+  const list = loadEntries();
+  list.splice(idx,1);
+  saveEntries(list);
+  renderEntries();
+  refreshActiveReport();
+}
+
+function refreshActiveReport(){
+  if(document.getElementById('blockReportBtn').classList.contains('active-report')) showReport('block');
+  else if(document.getElementById('phcReportBtn').classList.contains('active-report')) showReport('phc');
+}
+
+function renderEntries(){
+  const list = loadEntries();
+  document.getElementById('entryCount').textContent = list.length;
+  const container = document.getElementById('entryList');
+  container.innerHTML = '';
+  if(list.length === 0){
+    container.innerHTML = '<div class="empty-note">No entries saved yet.</div>';
+    return;
+  }
+  list.slice().reverse().forEach((entry, revIdx)=>{
+    const idx = list.length - 1 - revIdx;
+    const div = document.createElement('div');
+    div.className = 'entry-card';
+    const d = new Date(entry.savedAt);
+    div.innerHTML = `
+      <div>
+        <div class="name">${entry.pName || '(no name)'} — ${entry.pType || ''}</div>
+        <div class="meta">${entry.hsc || ''} · ${entry.phc || ''} · ${entry.block || ''} · ${entry.pDate || d.toLocaleDateString()}</div>
+      </div>
+      <button onclick="deleteEntry(${idx})">Delete</button>
+    `;
+    container.appendChild(div);
+  });
+}
+
+/* ---------- CSV export (opens in Excel) ---------- */
+function exportExcel(){
+  const list = loadEntries();
+  if(list.length === 0){
+    showToast('No entries to export');
+    return;
+  }
+  const headers = ['block','phc','hsc',...FIELD_IDS,...RADIO_GROUPS,'savedAt'];
+  const rows = [headers.join(',')];
+  list.forEach(entry=>{
+    const row = headers.map(h=>{
+      let v = entry[h] !== undefined ? String(entry[h]) : '';
+      v = v.replace(/"/g,'""');
+      if(v.search(/[",\n]/) >= 0) v = `"${v}"`;
+      return v;
+    });
+    rows.push(row.join(','));
+  });
+  const blob = new Blob(['\uFEFF' + rows.join('\n')], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `HWC_HSC_Daily_Report_${stamp}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Exported to CSV');
+}
+
+/* ---------- reports (Block-wise / PHC-wise) ---------- */
+function showReport(type){
+  document.getElementById('blockReportBtn').classList.toggle('active-report', type === 'block');
+  document.getElementById('phcReportBtn').classList.toggle('active-report', type === 'phc');
+
+  const list = loadEntries();
+  const out = document.getElementById('reportOutput');
+
+  if(list.length === 0){
+    out.innerHTML = '<div class="empty-note">No entries saved yet — nothing to report.</div>';
+    return;
+  }
+
+  const groups = {}; // key -> {label, total, male, female}
+  list.forEach(e=>{
+    const key = type === 'block' ? (e.block || '(Unknown Block)') : `${e.phc || '(Unknown PHC)'}||${e.block || ''}`;
+    if(!groups[key]) groups[key] = { label: type==='block' ? key : (e.phc || '(Unknown PHC)'), block: e.block || '', total:0, male:0, female:0 };
+    groups[key].total++;
+    if(e.pGender === 'Male') groups[key].male++;
+    if(e.pGender === 'Female') groups[key].female++;
+  });
+
+  const rows = Object.values(groups).sort((a,b)=> a.label.localeCompare(b.label));
+  const grandTotal = rows.reduce((s,r)=>s+r.total,0);
+  const grandMale = rows.reduce((s,r)=>s+r.male,0);
+  const grandFemale = rows.reduce((s,r)=>s+r.female,0);
+
+  let html = '<table class="report-table"><thead><tr>';
+  html += type === 'block' ? '<th>Block</th>' : '<th>PHC</th><th>Block</th>';
+  html += '<th class="num">Total Entries</th><th class="num">Male</th><th class="num">Female</th></tr></thead><tbody>';
+  rows.forEach(r=>{
+    html += '<tr>';
+    html += `<td>${r.label}</td>`;
+    if(type === 'phc') html += `<td>${r.block}</td>`;
+    html += `<td class="num">${r.total}</td><td class="num">${r.male}</td><td class="num">${r.female}</td>`;
+    html += '</tr>';
+  });
+  html += `</tbody><tfoot><tr><td${type==='phc' ? ' colspan="2"' : ''}>Total</td><td class="num">${grandTotal}</td><td class="num">${grandMale}</td><td class="num">${grandFemale}</td></tr></tfoot></table>`;
+
+  out.innerHTML = html;
+}
+
+/* ---------- toast ---------- */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove('show'), 2200);
+}
+
+/* ---------- init ---------- */
+document.addEventListener('DOMContentLoaded', ()=>{
+  populateBlocks();
+  initPills();
+  document.getElementById('pDate').valueAsDate = new Date();
+  renderEntries();
+  document.getElementById('reportOutput').innerHTML = '<div class="empty-note">Choose Block-wise or PHC-wise above to view a summary.</div>';
+});
+</script>
+</body>
+</html>
