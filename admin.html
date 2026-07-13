@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Admin Panel — Mayiladuthurai UHC</title>
+<style>
+  :root{
+    --ink:#12312b;
+    --paper:#f6f8f6;
+    --card:#ffffff;
+    --line:#d9e2dc;
+    --teal:#0f6d5c;
+    --teal-dark:#0a4f43;
+    --teal-light:#e6f3f0;
+    --amber:#c8791a;
+    --red:#b93b3b;
+    --muted:#5f7a72;
+    --shadow: 0 1px 2px rgba(15,109,92,.06), 0 6px 20px rgba(15,109,92,.06);
+    --radius: 14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--paper);
+    color:var(--ink);
+    font-family: "Segoe UI", "Noto Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height:1.4;
+    padding-bottom:60px;
+  }
+  header.top{
+    background: linear-gradient(135deg, var(--teal-dark), var(--teal) 70%);
+    color:#fff;
+    padding:22px 18px 26px;
+    border-radius:0 0 22px 22px;
+    box-shadow: var(--shadow);
+  }
+  header.top h1{ margin:0 0 4px; font-size:22px; }
+  header.top p{ margin:0; opacity:.85; font-size:14px; }
+  header.top a{ color:#fff; text-decoration:underline; font-size:13px; }
+  main{ max-width:760px; margin:0 auto; padding:18px; }
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:18px; margin-bottom:18px;
+  }
+  .card h2{ margin:0 0 4px; font-size:17px; color:var(--teal-dark); }
+  .card p.sub{ margin:0 0 14px; color:var(--muted); font-size:13px; }
+  table{ width:100%; border-collapse:collapse; font-size:14px; }
+  th,td{ text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); }
+  th{ color:var(--muted); font-weight:600; font-size:12px; text-transform:uppercase; }
+  .btn{
+    padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-size:13px; font-weight:600;
+  }
+  .btn-approve{ background:var(--teal); color:#fff; }
+  .btn-reject{ background:#fff; color:var(--red); border:1px solid var(--red); margin-left:6px; }
+  .btn-revoke{ background:#fff; color:var(--amber); border:1px solid var(--amber); }
+  .empty-note{ color:var(--muted); font-size:14px; padding:10px 0; }
+  .gate-wrap{ min-height:70vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .gate-card{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:28px 24px; max-width:400px; width:100%; text-align:center; }
+  .gate-card a{ color:var(--teal-dark); font-weight:600; }
+  .role-pill{ font-size:11px; padding:2px 8px; border-radius:20px; background:var(--teal-light); color:var(--teal-dark); font-weight:600; }
+  .dash-controls{ display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; margin-bottom:14px; }
+  .dash-controls .field{ display:flex; flex-direction:column; gap:4px; }
+  .dash-controls label{ font-size:12px; color:var(--muted); }
+  .dash-controls input[type="date"]{ padding:8px; border:1px solid var(--line); border-radius:8px; font-size:14px; }
+  .dash-controls button{ padding:9px 14px; border-radius:8px; border:none; background:var(--teal); color:#fff; font-weight:600; cursor:pointer; }
+  .dash-controls button.ghost{ background:#fff; color:var(--teal-dark); border:1px solid var(--teal-dark); }
+  .dash-stats{ display:flex; gap:12px; flex-wrap:wrap; }
+  .stat-box{ background:var(--teal-light); border-radius:12px; padding:14px 18px; min-width:120px; text-align:center; }
+  .stat-box.good{ background:#e5f6ec; }
+  .stat-box.bad{ background:#fdeaea; }
+  .stat-num{ font-size:26px; font-weight:700; color:var(--teal-dark); }
+  .stat-box.bad .stat-num{ color:var(--red); }
+  .stat-label{ font-size:12px; color:var(--muted); margin-top:2px; }
+</style>
+</head>
+<body>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, setDoc, deleteDoc, collection, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAfnPH8HNuJEA6V0X0JsIDQPPjMwPiIqxo",
+    authDomain: "uhcentrymyd.firebaseapp.com",
+    projectId: "uhcentrymyd",
+    storageBucket: "uhcentrymyd.firebasestorage.app",
+    messagingSenderId: "49851440599",
+    appId: "1:49851440599:web:295efcd68d6d3e7b0f3f92"
+  };
+  const ADMIN_EMAIL = "apmmyld@gmail.com";
+
+  const HIERARCHY = {"Kollidam": {"Edamanal": ["Umayalpathy"], "Kollidam": ["Pannangudi"], "Nallur": ["Mahendirapalli"], "Puthupattinam": ["Agaravattaram", "Thanttavangulam"], "Thirumullaivasal": ["Thoduvai"]}, "Kuttalam": {"Kiliyanur": ["Muthur"], "Komal": ["Asikadu"], "Konerirajapuram": ["Kanchivai"], "Manganallur": ["Vazhuvur"], "Mekkirimangalam": ["Pazhaiyakoodalur"]}, "Mayiladuthurai": {"Elanthoppu": ["Pattavarthi", "Sithamalli"], "Kali": ["Kodankudi", "Korukkai", "Mappadugai", "Pattamangalam"], "Manalmedu": ["Kadalangudi (Manalmed Phc)"], "Villiyanallur": ["Anathandavapuram", "Needur", "Uluthukuppai"]}, "Sembanarkovil": {"10.Keezhaiyur": ["Karuvalakkarai", "Kidarankondan", "Natham", "Pagasalai"], "Akkur": ["Akkur (Annappanpettai)", "Chinnangudi", "Erukattancherry", "Kalakasthinathapuram", "Killiyur", "Kumarakudi", "Mukkarumbur", "Poraiyar North", "Poraiyar South"], "Melaperumpallam": ["Keezhaperumpallam", "Thalachangadu"], "Sanganranpanthal": ["Eaduthukkattisathanu", "Eluppur", "Kattucherry", "Nalladai", "Neduvasal", "Thiruvilaiyattam"], "Sembanarkovil": ["Arupathi", "Elaiyalur", "Maymathur"], "Thirukadaiyur": ["Anaikoil", "Chandrapadi", "Kazhiyappanallur", "Kuttiyandiyur", "Manikkanpangu", "Pillaiperumanallur", "Sathangudi", "Thillaiyadi"]}, "Sirkali": {"Kathiruppu": ["Rathanallur"], "Thiruvengadu": ["Thiruvali"], "Valluvakudi": ["Nimmeli", "Thiruppungur"]}};
+
+  function getAllHSCs(){
+    const list = [];
+    Object.keys(HIERARCHY).sort().forEach(block=>{
+      Object.keys(HIERARCHY[block]).sort().forEach(phc=>{
+        HIERARCHY[block][phc].slice().sort().forEach(hsc=>{
+          list.push({ block, phc, hsc });
+        });
+      });
+    });
+    return list;
+  }
+  const ALL_HSCS = getAllHSCs();
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  function show(id){
+    ['gateSignedOut','gateNotAdmin','adminPanel'].forEach(x=>{
+      document.getElementById(x).style.display = (x===id) ? '' : 'none';
+    });
+  }
+
+  onAuthStateChanged(auth, (user)=>{
+    if(!user){ show('gateSignedOut'); return; }
+    if(user.email !== ADMIN_EMAIL){ show('gateNotAdmin'); return; }
+    document.getElementById('adminEmailLabel').textContent = user.email;
+    show('adminPanel');
+    listenUsers();
+    loadDashboard();
+  });
+
+  document.getElementById('signOutBtn').addEventListener('click', ()=> signOut(auth));
+
+  function listenUsers(){
+    onSnapshot(collection(db, 'users'), (snap)=>{
+      const pending = [];
+      const active = [];
+      snap.forEach(d=>{
+        const data = { uid: d.id, ...d.data() };
+        if(data.email === ADMIN_EMAIL) return; // don't list admin itself
+        if(data.status === 'active') active.push(data);
+        else pending.push(data);
+      });
+      renderPending(pending);
+      renderActive(active);
+    });
+  }
+
+  function fmtDate(ts){
+    if(!ts || !ts.toDate) return '—';
+    return ts.toDate().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+  }
+
+  function renderPending(list){
+    const el = document.getElementById('pendingList');
+    document.getElementById('pendingCount').textContent = list.length;
+    if(list.length === 0){ el.innerHTML = '<div class="empty-note">No pending requests.</div>'; return; }
+    let html = '<table><thead><tr><th>Email</th><th>Requested</th><th></th></tr></thead><tbody>';
+    list.forEach(u=>{
+      html += `<tr><td>${u.email}</td><td>${fmtDate(u.requestedAt)}</td><td>
+        <button class="btn btn-approve" data-uid="${u.uid}" data-action="approve">Approve</button>
+        <button class="btn btn-reject" data-uid="${u.uid}" data-action="reject">Reject</button>
+      </td></tr>`;
+    });
+    html += '</tbody></table>';
+    el.innerHTML = html;
+  }
+
+  function renderActive(list){
+    const el = document.getElementById('activeList');
+    document.getElementById('activeCount').textContent = list.length;
+    if(list.length === 0){ el.innerHTML = '<div class="empty-note">No approved users yet.</div>'; return; }
+    let html = '<table><thead><tr><th>Email</th><th>Role</th><th></th></tr></thead><tbody>';
+    list.forEach(u=>{
+      html += `<tr><td>${u.email}</td><td><span class="role-pill">${u.role || 'user'}</span></td><td>
+        <button class="btn btn-revoke" data-uid="${u.uid}" data-action="revoke">Revoke</button>
+      </td></tr>`;
+    });
+    html += '</tbody></table>';
+    el.innerHTML = html;
+  }
+
+  document.addEventListener('click', async (e)=>{
+    const btn = e.target.closest('button[data-action]');
+    if(!btn) return;
+    const uid = btn.dataset.uid;
+    const action = btn.dataset.action;
+    btn.disabled = true;
+    try{
+      if(action === 'approve') await setDoc(doc(db,'users',uid), { status:'active' }, { merge:true });
+      if(action === 'reject') await deleteDoc(doc(db,'users',uid));
+      if(action === 'revoke') await setDoc(doc(db,'users',uid), { status:'pending' }, { merge:true });
+    }catch(err){
+      alert('Action failed: ' + err.message);
+      btn.disabled = false;
+    }
+  });
+
+  /* ---------- District Dashboard ---------- */
+  function todayStr(){
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  document.getElementById('dashFrom').value = todayStr();
+  document.getElementById('dashTo').value = todayStr();
+
+  document.getElementById('dashTodayBtn').addEventListener('click', ()=>{
+    document.getElementById('dashFrom').value = todayStr();
+    document.getElementById('dashTo').value = todayStr();
+    loadDashboard();
+  });
+  document.getElementById('dashLoadBtn').addEventListener('click', loadDashboard);
+
+  let lastMissingList = [];
+
+  async function loadDashboard(){
+    const from = document.getElementById('dashFrom').value;
+    const to = document.getElementById('dashTo').value;
+    const out = document.getElementById('dashOutput');
+    if(!from || !to){ out.innerHTML = '<div class="empty-note">Pick both dates.</div>'; return; }
+    out.innerHTML = '<div class="empty-note">Loading…</div>';
+
+    const q = query(collection(db, 'entries'), where('pDate','>=',from), where('pDate','<=',to));
+    const snap = await getDocs(q);
+    const rows = [];
+    snap.forEach(d=> rows.push(d.data()));
+
+    const total = rows.length;
+    const male = rows.filter(r=> r.pGender === 'Male').length;
+    const female = rows.filter(r=> r.pGender === 'Female').length;
+
+    let html = `<div class="dash-stats">
+      <div class="stat-box"><div class="stat-num">${total}</div><div class="stat-label">Total OP Entries</div></div>
+      <div class="stat-box"><div class="stat-num">${male}</div><div class="stat-label">Male</div></div>
+      <div class="stat-box"><div class="stat-num">${female}</div><div class="stat-label">Female</div></div>
+    </div>`;
+
+    // Submission status only makes sense for a single-day check
+    if(from === to){
+      const submittedHSCs = new Set(rows.map(r=> r.hsc).filter(Boolean));
+      const submitted = ALL_HSCS.filter(h=> submittedHSCs.has(h.hsc));
+      const missing = ALL_HSCS.filter(h=> !submittedHSCs.has(h.hsc));
+      lastMissingList = missing;
+
+      html += `<h3 style="margin:18px 0 8px;">Submission Status for ${from}</h3>
+      <div class="dash-stats">
+        <div class="stat-box good"><div class="stat-num">${submitted.length}</div><div class="stat-label">HSCs Submitted</div></div>
+        <div class="stat-box bad"><div class="stat-num">${missing.length}</div><div class="stat-label">HSCs Missing</div></div>
+      </div>
+      <button class="btn" id="downloadMissingBtn" style="background:var(--amber); color:#fff; margin-top:10px;">⬇ Download Missing HSC List</button>
+      <table style="margin-top:14px;"><thead><tr><th>HSC</th><th>PHC</th><th>Block</th><th>Status</th></tr></thead><tbody>`;
+      ALL_HSCS.forEach(h=>{
+        const ok = submittedHSCs.has(h.hsc);
+        html += `<tr><td>${h.hsc}</td><td>${h.phc}</td><td>${h.block}</td><td>${ok ? '✅ Submitted' : '❌ Missing'}</td></tr>`;
+      });
+      html += '</tbody></table>';
+    } else {
+      html += '<div class="empty-note">Pick the same From and To date to see which HSCs have/haven\'t submitted.</div>';
+    }
+
+    out.innerHTML = html;
+
+    const dlBtn = document.getElementById('downloadMissingBtn');
+    if(dlBtn) dlBtn.addEventListener('click', downloadMissingCSV);
+  }
+
+  function downloadMissingCSV(){
+    let csv = 'Block,PHC,HSC\n';
+    lastMissingList.forEach(h=>{
+      csv += `"${h.block}","${h.phc}","${h.hsc}"\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `missing_hscs_${document.getElementById('dashFrom').value}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+</script>
+
+<header class="top">
+  <h1>Admin Panel</h1>
+  <p>Mayiladuthurai UHC — User Access Management &nbsp;·&nbsp; <a href="/">← Back to app</a></p>
+</header>
+
+<main>
+
+  <div class="gate-wrap" id="gateSignedOut">
+    <div class="gate-card">
+      <h2>Please sign in first</h2>
+      <p>Go to the <a href="/">main app</a> and sign in with your admin account, then return to this page.</p>
+    </div>
+  </div>
+
+  <div class="gate-wrap" id="gateNotAdmin" style="display:none;">
+    <div class="gate-card">
+      <h2>Access denied</h2>
+      <p>This page is restricted to the district admin account.</p>
+    </div>
+  </div>
+
+  <div id="adminPanel" style="display:none;">
+    <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+      <div>Signed in as <strong id="adminEmailLabel"></strong></div>
+      <button class="btn" id="signOutBtn" style="background:none; border:1px solid var(--teal-dark); color:var(--teal-dark);">Sign out</button>
+    </div>
+
+    <div class="card">
+      <h2>District Dashboard</h2>
+      <p class="sub">Pick a date range for totals, or the same date twice to see which HSCs have/haven't submitted today.</p>
+      <div class="dash-controls">
+        <div class="field"><label>From</label><input type="date" id="dashFrom"></div>
+        <div class="field"><label>To</label><input type="date" id="dashTo"></div>
+        <button id="dashTodayBtn" class="ghost">Today</button>
+        <button id="dashLoadBtn">Load Report</button>
+      </div>
+      <div id="dashOutput"></div>
+    </div>
+
+    <div class="card">
+      <h2>Pending Approval (<span id="pendingCount">0</span>)</h2>
+      <p class="sub">New sign-ups waiting for access to enter data.</p>
+      <div id="pendingList"></div>
+    </div>
+
+    <div class="card">
+      <h2>Approved Users (<span id="activeCount">0</span>)</h2>
+      <p class="sub">Currently have access to submit entries.</p>
+      <div id="activeList"></div>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>
