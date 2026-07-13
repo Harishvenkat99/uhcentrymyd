@@ -804,6 +804,7 @@
   <div class="actions" style="padding:0; margin-bottom:10px;">
     <button class="btn-ghost" id="blockReportBtn" onclick="showReport('block')">📊 Block-wise Report</button>
     <button class="btn-ghost" id="phcReportBtn" onclick="showReport('phc')">📊 PHC-wise Report</button>
+    <button class="btn-ghost" id="hscReportBtn" onclick="showReport('hsc')">📊 HSC-wise Report</button>
   </div>
   <div id="reportOutput"></div>
 </div>
@@ -876,8 +877,11 @@ function updateEntriesHeading(){
 function initPills(){
   document.querySelectorAll('.pillgroup').forEach(group=>{
     group.querySelectorAll('.pill').forEach(pill=>{
-      pill.addEventListener('click', ()=>{
-        const input = pill.querySelector('input');
+      const input = pill.querySelector('input');
+      // Listen on the input itself (not the label) to avoid the label's
+      // built-in "forwarded click" firing this handler a second time,
+      // which was cancelling the highlight right back out.
+      input.addEventListener('click', (e)=>{
         const wasActive = pill.classList.contains('active');
         group.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
         if(wasActive){
@@ -1007,6 +1011,7 @@ function deleteEntry(idx){
 function refreshActiveReport(){
   if(document.getElementById('blockReportBtn').classList.contains('active-report')) showReport('block');
   else if(document.getElementById('phcReportBtn').classList.contains('active-report')) showReport('phc');
+  else if(document.getElementById('hscReportBtn').classList.contains('active-report')) showReport('hsc');
 }
 
 function renderEntries(){
@@ -1065,10 +1070,11 @@ function exportExcel(){
   showToast('Exported to CSV');
 }
 
-/* ---------- reports (Block-wise / PHC-wise) ---------- */
+/* ---------- reports (Block-wise / PHC-wise / HSC-wise) ---------- */
 function showReport(type){
   document.getElementById('blockReportBtn').classList.toggle('active-report', type === 'block');
   document.getElementById('phcReportBtn').classList.toggle('active-report', type === 'phc');
+  document.getElementById('hscReportBtn').classList.toggle('active-report', type === 'hsc');
 
   const list = loadEntries();
   const out = document.getElementById('reportOutput');
@@ -1078,10 +1084,20 @@ function showReport(type){
     return;
   }
 
-  const groups = {}; // key -> {label, total, male, female}
+  const groups = {}; // key -> {label, phc, block, total, male, female}
   list.forEach(e=>{
-    const key = type === 'block' ? (e.block || '(Unknown Block)') : `${e.phc || '(Unknown PHC)'}||${e.block || ''}`;
-    if(!groups[key]) groups[key] = { label: type==='block' ? key : (e.phc || '(Unknown PHC)'), block: e.block || '', total:0, male:0, female:0 };
+    let key;
+    if(type === 'block') key = e.block || '(Unknown Block)';
+    else if(type === 'phc') key = `${e.phc || '(Unknown PHC)'}||${e.block || ''}`;
+    else key = `${e.hsc || '(Unknown HSC)'}||${e.phc || ''}||${e.block || ''}`;
+
+    if(!groups[key]){
+      let label;
+      if(type === 'block') label = key;
+      else if(type === 'phc') label = e.phc || '(Unknown PHC)';
+      else label = e.hsc || '(Unknown HSC)';
+      groups[key] = { label, phc: e.phc || '', block: e.block || '', total:0, male:0, female:0 };
+    }
     groups[key].total++;
     if(e.pGender === 'Male') groups[key].male++;
     if(e.pGender === 'Female') groups[key].female++;
@@ -1092,17 +1108,22 @@ function showReport(type){
   const grandMale = rows.reduce((s,r)=>s+r.male,0);
   const grandFemale = rows.reduce((s,r)=>s+r.female,0);
 
+  const extraCols = type === 'phc' ? 1 : (type === 'hsc' ? 2 : 0);
+
   let html = '<table class="report-table"><thead><tr>';
-  html += type === 'block' ? '<th>Block</th>' : '<th>PHC</th><th>Block</th>';
+  if(type === 'block') html += '<th>Block</th>';
+  else if(type === 'phc') html += '<th>PHC</th><th>Block</th>';
+  else html += '<th>HSC</th><th>PHC</th><th>Block</th>';
   html += '<th class="num">Total Entries</th><th class="num">Male</th><th class="num">Female</th></tr></thead><tbody>';
   rows.forEach(r=>{
     html += '<tr>';
     html += `<td>${r.label}</td>`;
     if(type === 'phc') html += `<td>${r.block}</td>`;
+    if(type === 'hsc') html += `<td>${r.phc}</td><td>${r.block}</td>`;
     html += `<td class="num">${r.total}</td><td class="num">${r.male}</td><td class="num">${r.female}</td>`;
     html += '</tr>';
   });
-  html += `</tbody><tfoot><tr><td${type==='phc' ? ' colspan="2"' : ''}>Total</td><td class="num">${grandTotal}</td><td class="num">${grandMale}</td><td class="num">${grandFemale}</td></tr></tfoot></table>`;
+  html += `</tbody><tfoot><tr><td${extraCols ? ` colspan="${1+extraCols}"` : ''}>Total</td><td class="num">${grandTotal}</td><td class="num">${grandMale}</td><td class="num">${grandFemale}</td></tr></tfoot></table>`;
 
   out.innerHTML = html;
 }
@@ -1123,7 +1144,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   initPills();
   document.getElementById('pDate').valueAsDate = new Date();
   renderEntries();
-  document.getElementById('reportOutput').innerHTML = '<div class="empty-note">Choose Block-wise or PHC-wise above to view a summary.</div>';
+  document.getElementById('reportOutput').innerHTML = '<div class="empty-note">Choose Block-wise, PHC-wise, or HSC-wise above to view a summary.</div>';
 });
 </script>
 </body>
