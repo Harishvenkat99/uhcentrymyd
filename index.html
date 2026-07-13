@@ -1409,6 +1409,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
   dateInput.min = toDateStr(yesterday);
   dateInput.max = toDateStr(today);
   dateInput.valueAsDate = today;
+  // iOS Safari's wheel-style date picker doesn't gray out dates outside min/max,
+  // so correct it immediately on change instead of waiting for Save.
+  dateInput.addEventListener('change', ()=>{
+    if(dateInput.value && (dateInput.value < dateInput.min || dateInput.value > dateInput.max)){
+      showToast('You can only submit entries for today or yesterday.');
+      dateInput.valueAsDate = new Date();
+    }
+  });
   renderEntries();
   document.getElementById('reportOutput').innerHTML = '<div class="empty-note">Choose Block-wise, PHC-wise, or HSC-wise above to view a summary.</div>';
 });
