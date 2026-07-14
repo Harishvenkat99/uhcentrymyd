@@ -76,6 +76,7 @@
 </head>
 <body>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style/dist/xlsx.bundle.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -245,6 +246,7 @@
         <div class="stat-box bad"><div class="stat-num">${missing.length}</div><div class="stat-label">HSCs Missing</div></div>
       </div>
       <button class="btn" id="downloadMissingBtn" style="background:var(--amber); color:#fff; margin-top:10px;">⬇ Download Missing HSC List</button>
+      <button class="btn" id="downloadExcelBtn" style="background:var(--teal); color:#fff; margin-top:10px; margin-left:8px;">⬇ Download Excel Report</button>
       <table style="margin-top:14px;"><thead><tr><th>HSC</th><th>PHC</th><th>Block</th><th>Status</th></tr></thead><tbody>`;
       ALL_HSCS.forEach(h=>{
         const ok = submittedHSCs.has(h.hsc);
@@ -259,6 +261,9 @@
 
     const dlBtn = document.getElementById('downloadMissingBtn');
     if(dlBtn) dlBtn.addEventListener('click', downloadMissingCSV);
+
+    const excelBtn = document.getElementById('downloadExcelBtn');
+    if(excelBtn) excelBtn.addEventListener('click', downloadExcelReport);
   }
 
   function downloadMissingCSV(){
@@ -273,6 +278,131 @@
     a.download = `missing_hscs_${document.getElementById('dashFrom').value}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  /* ---------- Excel report (official district format) ---------- */
+  const EXCEL_HEADERS = [
+    'Sl.No.','Date','Block','PHC','HWC-HSC Name','Patient Name','Phone Number','Gender',
+    'Type of Patient','Type of Consultation','AAM Portal','PICME','MTM','HMIS','Fever',
+    'Mental health Illness Cases Followup','EYE','Ear/Nose/Throat','Dog bite case attended',
+    'ARV given','Injury/Emergency','Emergency cases provided with Inj.Td',
+    'Cardiac Cases managed with loading dose and referred',
+    'Emergency cases referred to Higher Facility','NCD Screening','NCD Follow up',
+    'Cancer Screening','Screening Positive/Negative','Entered in MTM Portal','Blood Pressure',
+    'Temperature','SpO2 saturation','Urine Pregnancy Test','Hemoglobin value','Anemia',
+    'Blood Sugar value','Urine Albumin','Urine Sugar','HIV test','HbsAg','VDRL',
+    'Iodine salt test','Water testing','Sputum for AFB','Peripheral smear for Malaria',
+    'Others (investigation)','Calcium Carbonate','IFA Large','Junior WIFS','Iron syrup',
+    'Vitamin A Syrup','Others (kit)','Metformin','Amlodipine','Glimepiride','Glibenclamide',
+    'Sitagliptin','Norfloxacin','Doxycycline','Co-trimoxazole','Amoxicillin','Ciprofloxacin',
+    'Other drugs','Family Welfare drugs'
+  ];
+
+  function excelVal(r, key){
+    const v = r[key];
+    if(v === undefined || v === null) return '';
+    const s = String(v).trim();
+    if(s === 'undefined' || s === 'null') return '';
+    return s;
+  }
+
+  function combineQtyGiven(r, qtyKey, givenKey){
+    const qty = excelVal(r, qtyKey);
+    if(!qty) return '';
+    return `${qty} (${excelVal(r, givenKey)})`;
+  }
+
+  function combineNameQty(r, nameKey, qtyKey){
+    const name = excelVal(r, nameKey);
+    if(!name) return '';
+    return `${name}: ${excelVal(r, qtyKey)}`;
+  }
+
+  function rowToExcelArray(r, slNo){
+    return [
+      slNo,
+      excelVal(r,'pDate'), excelVal(r,'block'), excelVal(r,'phc'), excelVal(r,'hsc'),
+      excelVal(r,'pName'), excelVal(r,'pPhone'), excelVal(r,'pGender'), excelVal(r,'pType'),
+      excelVal(r,'consultType'), excelVal(r,'aamPortal'), excelVal(r,'picme'), excelVal(r,'mtm'),
+      excelVal(r,'hmis'), excelVal(r,'fever'), excelVal(r,'mentalHealthFollowup'), excelVal(r,'eye'),
+      excelVal(r,'ent'), excelVal(r,'dogCategory'), excelVal(r,'arvGiven'), excelVal(r,'injuryType'),
+      excelVal(r,'injTd'), excelVal(r,'cardiacCase'), excelVal(r,'emergencyReferred'),
+      excelVal(r,'ncdScreening'), excelVal(r,'ncdFollowup'), excelVal(r,'cancerMethod'),
+      excelVal(r,'cancerResult'), excelVal(r,'cancerMtmPortal'), excelVal(r,'bp'), excelVal(r,'temp'),
+      excelVal(r,'spo2'), excelVal(r,'upt'), excelVal(r,'hbValue'), excelVal(r,'anemia'),
+      excelVal(r,'bloodSugar'), excelVal(r,'urineAlbumin'), excelVal(r,'urineSugar'), excelVal(r,'hiv'),
+      excelVal(r,'hbsag'), excelVal(r,'vdrl'), excelVal(r,'iodineTests'), excelVal(r,'waterTests'),
+      excelVal(r,'sputumAfb'), excelVal(r,'peripheralSmear'), excelVal(r,'investigationOthers'),
+      combineQtyGiven(r,'calciumQty','calciumGivenTo'), combineQtyGiven(r,'ifaQty','ifaGivenTo'),
+      combineQtyGiven(r,'wifsQty','wifsGiven'), combineQtyGiven(r,'ironSyrupQty','ironSyrupGiven'),
+      combineQtyGiven(r,'vitAQty','vitAGiven'), combineNameQty(r,'kitOtherName','kitOtherQty'),
+      excelVal(r,'ncdMetformin'), excelVal(r,'ncdAmlodipine'), excelVal(r,'ncdGlimepiride'),
+      excelVal(r,'ncdGlibenclamide'), excelVal(r,'ncdSitagliptin'), excelVal(r,'edlNorfloxacin'),
+      excelVal(r,'edlDoxycycline'), excelVal(r,'edlCotrimoxazole'), excelVal(r,'edlAmoxicillin'),
+      excelVal(r,'edlCiprofloxacin'), combineNameQty(r,'edlOtherName','edlOtherQty'),
+      excelVal(r,'familyWelfare')
+    ];
+  }
+
+  function blankHscRow(h, slNo){
+    const arr = new Array(EXCEL_HEADERS.length).fill('');
+    arr[0] = slNo;
+    arr[2] = h.block;
+    arr[3] = h.phc;
+    arr[4] = h.hsc;
+    return arr;
+  }
+
+  async function downloadExcelReport(){
+    const date = document.getElementById('dashFrom').value;
+    if(!date) return;
+
+    const q = query(collection(db, 'entries'), where('pDate','>=',date), where('pDate','<=',date));
+    const snap = await getDocs(q);
+    const entriesByHsc = {};
+    snap.forEach(d=>{
+      const r = d.data();
+      const key = r.hsc || '';
+      if(!entriesByHsc[key]) entriesByHsc[key] = [];
+      entriesByHsc[key].push(r);
+    });
+
+    const aoa = [EXCEL_HEADERS];
+    const redRows = [];
+    let slNo = 1;
+
+    ALL_HSCS.forEach(h=>{
+      const hscEntries = entriesByHsc[h.hsc];
+      if(hscEntries && hscEntries.length){
+        hscEntries.forEach(r=>{
+          aoa.push(rowToExcelArray(r, slNo));
+          slNo++;
+        });
+      } else {
+        aoa.push(blankHscRow(h, slNo));
+        redRows.push(aoa.length - 1);
+        slNo++;
+      }
+    });
+
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+
+    for(let c = 0; c < EXCEL_HEADERS.length; c++){
+      const cellRef = XLSX.utils.encode_cell({ r:0, c });
+      if(ws[cellRef]) ws[cellRef].s = { font: { bold: true } };
+    }
+
+    redRows.forEach(rowIdx=>{
+      for(let c = 0; c < EXCEL_HEADERS.length; c++){
+        const cellRef = XLSX.utils.encode_cell({ r: rowIdx, c });
+        if(!ws[cellRef]) ws[cellRef] = { t:'s', v:'' };
+        ws[cellRef].s = { ...(ws[cellRef].s||{}), fill: { fgColor: { rgb: "FFCCCC" } } };
+      }
+    });
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'District Report');
+    XLSX.writeFile(wb, `District_Report_${date}.xlsx`);
   }
 </script>
 
