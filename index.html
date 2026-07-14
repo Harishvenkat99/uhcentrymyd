@@ -279,7 +279,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import {
     getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
-    signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut
+    signInWithPopup, GoogleAuthProvider, signOut
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import {
     getFirestore, doc, getDoc, setDoc, collection, addDoc, deleteDoc,
@@ -410,14 +410,8 @@
 
   document.getElementById('googleBtn').addEventListener('click', async ()=>{
     setErr('');
-    try{ await signInWithRedirect(auth, new GoogleAuthProvider()); }
+    try{ await signInWithPopup(auth, new GoogleAuthProvider()); }
     catch(e){ setErr(friendlyError(e)); }
-  });
-
-  // Catch any error from a completed Google redirect sign-in (e.g. domain not authorized).
-  getRedirectResult(auth).catch((e)=>{
-    if(e && e.code) setErr(friendlyError(e));
-    console.error('Google redirect sign-in error:', e);
   });
 
   document.getElementById('logoutBtn').addEventListener('click', ()=> signOut(auth));
@@ -429,6 +423,8 @@
     if(code.includes('email-already-in-use')) return 'Account already exists — try signing in instead';
     if(code.includes('invalid-email')) return 'Enter a valid email address';
     if(code.includes('unauthorized-domain')) return 'This site isn\'t authorized for Google sign-in yet — contact admin';
+    if(code.includes('popup-blocked')) return 'Please allow popups for this site in your browser settings, then try again';
+    if(code.includes('popup-closed-by-user')) return '';
     return 'Something went wrong. Try again.';
   }
 </script>
