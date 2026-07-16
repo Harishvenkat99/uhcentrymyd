@@ -602,52 +602,28 @@
     </div>
   </section>
 
-  <!-- STEP 3: PORTAL ENTRY -->
+  <!-- STEP 3: VITAL SIGNS -->
   <section class="step" data-step="3">
     <div class="step-head" onclick="toggleStep(this)">
       <div class="step-num">3</div>
       <div class="titles">
-        <h2>Portal Entry</h2>
-        <p>Performance details</p>
+        <h2>Vital Signs</h2>
+        <p>BP, temperature, SpO2</p>
       </div>
       <div class="chev">▾</div>
     </div>
     <div class="step-body">
-      <div class="subhead">Details entered in portal</div>
       <div class="field">
-        <label>AAM Portal</label>
-        <fieldset class="pillgroup" data-name="aamPortal"><legend>AAM Portal</legend>
-          <label class="pill"><input type="radio" name="aamPortal" value="Yes">Yes</label>
-          <label class="pill"><input type="radio" name="aamPortal" value="No">No</label>
-        </fieldset>
+        <label>Blood Pressure</label>
+        <input type="text" id="bp" placeholder="e.g. 120/80">
       </div>
       <div class="field">
-        <label>PICME</label>
-        <fieldset class="pillgroup" data-name="picme"><legend>PICME</legend>
-          <label class="pill"><input type="radio" name="picme" value="Yes">Yes</label>
-          <label class="pill"><input type="radio" name="picme" value="No">No</label>
-        </fieldset>
+        <label>Temp (°F)</label>
+        <input type="number" step="0.1" id="temp">
       </div>
       <div class="field">
-        <label>MTM</label>
-        <fieldset class="pillgroup" data-name="mtm"><legend>MTM</legend>
-          <label class="pill"><input type="radio" name="mtm" value="Yes">Yes</label>
-          <label class="pill"><input type="radio" name="mtm" value="No">No</label>
-        </fieldset>
-      </div>
-      <div class="field">
-        <label>HMIS</label>
-        <fieldset class="pillgroup" data-name="hmis"><legend>HMIS</legend>
-          <label class="pill"><input type="radio" name="hmis" value="Yes">Yes</label>
-          <label class="pill"><input type="radio" name="hmis" value="No">No</label>
-        </fieldset>
-      </div>
-      <div class="field">
-        <label>IHIP</label>
-        <fieldset class="pillgroup" data-name="ihip"><legend>IHIP</legend>
-          <label class="pill"><input type="radio" name="ihip" value="Yes">Yes</label>
-          <label class="pill"><input type="radio" name="ihip" value="No">No</label>
-        </fieldset>
+        <label>SpO2 (%)</label>
+        <input type="number" id="spo2">
       </div>
     </div>
   </section>
@@ -1138,36 +1114,10 @@
     </div>
   </section>
 
-  <!-- STEP 8: VITAL SIGNS -->
+  <!-- STEP 8: LAB DIAGNOSIS -->
   <section class="step" data-step="8">
     <div class="step-head" onclick="toggleStep(this)">
       <div class="step-num">8</div>
-      <div class="titles">
-        <h2>Vital Signs</h2>
-        <p>BP, temperature, SpO2</p>
-      </div>
-      <div class="chev">▾</div>
-    </div>
-    <div class="step-body">
-      <div class="field">
-        <label>Blood Pressure</label>
-        <input type="text" id="bp" placeholder="e.g. 120/80">
-      </div>
-      <div class="field">
-        <label>Temp (°F)</label>
-        <input type="number" step="0.1" id="temp">
-      </div>
-      <div class="field">
-        <label>SpO2 (%)</label>
-        <input type="number" id="spo2">
-      </div>
-    </div>
-  </section>
-
-  <!-- STEP 9: LAB DIAGNOSIS -->
-  <section class="step" data-step="9">
-    <div class="step-head" onclick="toggleStep(this)">
-      <div class="step-num">9</div>
       <div class="titles">
         <h2>Lab Diagnosis</h2>
         <p>Hb, blood sugar, urine tests, AN mother screening</p>
@@ -1247,10 +1197,10 @@
     </div>
   </section>
 
-  <!-- STEP 10: INVESTIGATIONS BY HEALTH INSPECTOR -->
-  <section class="step" data-step="10">
+  <!-- STEP 9: INVESTIGATIONS BY HEALTH INSPECTOR -->
+  <section class="step" data-step="9">
     <div class="step-head" onclick="toggleStep(this)">
-      <div class="step-num">10</div>
+      <div class="step-num">9</div>
       <div class="titles">
         <h2>Investigations by Health Inspector</h2>
         <p>Iodine, water, sputum, smear tests</p>
@@ -1285,10 +1235,10 @@
     </div>
   </section>
 
-  <!-- STEP 11: KIT A & KIT B -->
-  <section class="step" data-step="11">
+  <!-- STEP 10: KIT A & KIT B -->
+  <section class="step" data-step="10">
     <div class="step-head" onclick="toggleStep(this)">
-      <div class="step-num">11</div>
+      <div class="step-num">10</div>
       <div class="titles">
         <h2>Kit A &amp; Kit B</h2>
         <p>Calcium, IFA, WIFS, iron syrup, Kit B drugs</p>
@@ -1371,10 +1321,10 @@
     </div>
   </section>
 
-  <!-- STEP 12: ESSENTIAL DRUGS -->
-  <section class="step" data-step="12">
+  <!-- STEP 11: ESSENTIAL DRUGS -->
+  <section class="step" data-step="11">
     <div class="step-head" onclick="toggleStep(this)">
-      <div class="step-num">12</div>
+      <div class="step-num">11</div>
       <div class="titles">
         <h2>Essential Drugs</h2>
         <p>HT/DM/cardiac/antibiotic/other EDL, family welfare</p>
@@ -1467,6 +1417,56 @@
           <option>Referred for Medical Management for abortion (MMA)</option>
           <option>Referred for Medical Termination of Pregnancy (MTP)</option>
         </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 12: PORTAL ENTRY -->
+  <section class="step" data-step="12">
+    <div class="step-head" onclick="toggleStep(this)">
+      <div class="step-num">12</div>
+      <div class="titles">
+        <h2>Portal Entry</h2>
+        <p>Performance details</p>
+      </div>
+      <div class="chev">▾</div>
+    </div>
+    <div class="step-body">
+      <div class="subhead">Details entered in portal</div>
+      <div class="field">
+        <label>AAM Portal</label>
+        <fieldset class="pillgroup" data-name="aamPortal"><legend>AAM Portal</legend>
+          <label class="pill"><input type="radio" name="aamPortal" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="aamPortal" value="No">No</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>PICME</label>
+        <fieldset class="pillgroup" data-name="picme"><legend>PICME</legend>
+          <label class="pill"><input type="radio" name="picme" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="picme" value="No">No</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>MTM</label>
+        <fieldset class="pillgroup" data-name="mtm"><legend>MTM</legend>
+          <label class="pill"><input type="radio" name="mtm" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="mtm" value="No">No</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>HMIS</label>
+        <fieldset class="pillgroup" data-name="hmis"><legend>HMIS</legend>
+          <label class="pill"><input type="radio" name="hmis" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="hmis" value="No">No</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>IHIP</label>
+        <fieldset class="pillgroup" data-name="ihip"><legend>IHIP</legend>
+          <label class="pill"><input type="radio" name="ihip" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="ihip" value="No">No</label>
+        </fieldset>
       </div>
     </div>
   </section>
