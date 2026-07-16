@@ -1132,13 +1132,13 @@
     </div>
   </section>
 
-  <!-- STEP 8: VITALS & DIAGNOSTICS -->
+  <!-- STEP 8: VITAL SIGNS -->
   <section class="step" data-step="8">
     <div class="step-head" onclick="toggleStep(this)">
       <div class="step-num">8</div>
       <div class="titles">
-        <h2>Vital Signs &amp; Diagnostics</h2>
-        <p>BP, Hb, blood sugar, urine tests</p>
+        <h2>Vital Signs</h2>
+        <p>BP, temperature, SpO2, field investigations</p>
       </div>
       <div class="chev">▾</div>
     </div>
@@ -1155,72 +1155,6 @@
       <div class="field">
         <label>SpO2 (%)</label>
         <input type="number" id="spo2">
-      </div>
-
-      <div class="subhead">Diagnostics</div>
-      <div class="field">
-        <label>Urine Pregnancy Test</label>
-        <fieldset class="pillgroup" data-name="upt"><legend>UPT</legend>
-          <label class="pill"><input type="radio" name="upt" value="Positive">Positive</label>
-          <label class="pill"><input type="radio" name="upt" value="Negative">Negative</label>
-        </fieldset>
-      </div>
-      <div class="field">
-        <label>Hemoglobin — Value</label>
-        <input type="number" step="0.1" id="hbValue">
-      </div>
-      <div class="field">
-        <label>Anemia</label>
-        <select id="anemia">
-          <option value="">—</option>
-          <option>Mild (11 to 11.9)</option>
-          <option>Moderate (8 to 10.9)</option>
-          <option>Severe (&lt;8)</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Blood Sugar — Value</label>
-        <input type="number" id="bloodSugar">
-      </div>
-      <div class="field">
-        <label>Urine Albumin</label>
-        <fieldset class="pillgroup" data-name="urineAlbumin"><legend>Urine Albumin</legend>
-          <label class="pill"><input type="radio" name="urineAlbumin" value="Positive">Positive</label>
-          <label class="pill"><input type="radio" name="urineAlbumin" value="Negative">Negative</label>
-        </fieldset>
-      </div>
-      <div class="field">
-        <label>Urine Sugar</label>
-        <select id="urineSugar">
-          <option value="">—</option>
-          <option>+</option>
-          <option>++</option>
-          <option>+++</option>
-          <option>++++</option>
-        </select>
-      </div>
-
-      <div class="subhead">For AN Pregnant Mothers</div>
-      <div class="field">
-        <label>HIV Test</label>
-        <fieldset class="pillgroup" data-name="hiv"><legend>HIV</legend>
-          <label class="pill"><input type="radio" name="hiv" value="Positive">Positive</label>
-          <label class="pill"><input type="radio" name="hiv" value="Negative">Negative</label>
-        </fieldset>
-      </div>
-      <div class="field">
-        <label>HbsAg (Hep. B)</label>
-        <fieldset class="pillgroup" data-name="hbsag"><legend>HbsAg</legend>
-          <label class="pill"><input type="radio" name="hbsag" value="Positive">Positive</label>
-          <label class="pill"><input type="radio" name="hbsag" value="Negative">Negative</label>
-        </fieldset>
-      </div>
-      <div class="field full">
-        <label>VDRL (Syphilis)</label>
-        <fieldset class="pillgroup" data-name="vdrl"><legend>VDRL</legend>
-          <label class="pill"><input type="radio" name="vdrl" value="Positive">Positive</label>
-          <label class="pill"><input type="radio" name="vdrl" value="Negative">Negative</label>
-        </fieldset>
       </div>
 
       <div class="subhead">Investigations — UHC MPHW (Health Inspector) Grade-II</div>
@@ -1253,10 +1187,93 @@
     </div>
   </section>
 
-  <!-- STEP 9: DRUGS DISPENSED -->
+  <!-- STEP 9: LAB DIAGNOSIS -->
   <section class="step" data-step="9">
     <div class="step-head" onclick="toggleStep(this)">
       <div class="step-num">9</div>
+      <div class="titles">
+        <h2>Lab Diagnosis</h2>
+        <p>Hb, blood sugar, urine tests, AN mother screening</p>
+      </div>
+      <div class="chev">▾</div>
+    </div>
+    <div class="step-body">
+      <div class="field">
+        <label for="upt">Urine Pregnancy Test Positive/Negative</label>
+        <select id="upt">
+          <option value="">— Select —</option>
+          <option>Positive</option>
+          <option>Negative</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="hbValue">Hemoglobin test - Value</label>
+        <input type="number" step="0.1" id="hbValue">
+      </div>
+      <div class="field">
+        <label for="anemia">Anemia</label>
+        <select id="anemia">
+          <option value="">— Select —</option>
+          <option>Mild (11 to 11.9)</option>
+          <option>Moderate (8 to 10.9)</option>
+          <option>Severe (&lt;8)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="bloodSugar">Blood Sugar - Value</label>
+        <input type="number" id="bloodSugar">
+      </div>
+      <div class="field">
+        <label for="urineAlbumin">Urine Albumin</label>
+        <select id="urineAlbumin">
+          <option value="">— Select —</option>
+          <option>Positive</option>
+          <option>Negative</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="urineSugar">Urine Sugar</label>
+        <select id="urineSugar">
+          <option value="">— Select —</option>
+          <option>+</option>
+          <option>++</option>
+          <option>+++</option>
+          <option>++++</option>
+        </select>
+      </div>
+
+      <div class="subhead">For AN Pregnant Mothers</div>
+      <div class="field">
+        <label for="hiv">HIV test</label>
+        <select id="hiv">
+          <option value="">— Select —</option>
+          <option>Positive</option>
+          <option>Negative</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="hbsag">HbsAg test for Hepatitis B</label>
+        <select id="hbsag">
+          <option value="">— Select —</option>
+          <option>Positive</option>
+          <option>Negative</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="vdrl">VDRL for Syphilis</label>
+        <select id="vdrl">
+          <option value="">— Select —</option>
+          <option>Positive</option>
+          <option>Negative</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 10: DRUGS DISPENSED -->
+  <section class="step" data-step="10">
+    <div class="step-head" onclick="toggleStep(this)">
+      <div class="step-num">10</div>
       <div class="titles">
         <h2>Drugs Dispensed</h2>
         <p>Kit A/B, NCD, EDL, Family Welfare</p>
@@ -1498,8 +1515,9 @@ const FIELD_IDS = [
   'oralScreening','oralResult','breastScreening','breastResult','cervicalResult',
   'tbScreening','tbTreatmentDate','tbContactScreening','tbContactTreatmentDate',
   'leprosyScreening','leprosyTreatmentDate','leprosyContactScreening','leprosyContactTreatmentDate',
-  'bp','temp','spo2','hbValue','anemia','bloodSugar','urineSugar','investigationOthers',
+  'bp','temp','spo2','investigationOthers',
   'iodineTests','waterTests',
+  'upt','hbValue','anemia','bloodSugar','urineAlbumin','urineSugar','hiv','hbsag','vdrl',
   'calciumGivenTo','calciumQty','ifaGivenTo','ifaQty','wifsGiven','wifsQty',
   'ironSyrupGiven','ironSyrupQty','vitAGiven','vitAQty','kitOtherName','kitOtherQty',
   'ncdMetformin','ncdAmlodipine','ncdGlimepiride','ncdGlibenclamide','ncdSitagliptin',
@@ -1508,8 +1526,7 @@ const FIELD_IDS = [
 ];
 const RADIO_GROUPS = [
   'aamPortal','picme','mtm','hmis','injTd',
-  'emergencyReferred','upt','urineAlbumin','hiv',
-  'hbsag','vdrl','sputumAfb','peripheralSmear','familyWelfare',
+  'emergencyReferred','sputumAfb','peripheralSmear','familyWelfare',
   'cardiacManaged','mentalReferred','arvCategory3Referred',
   'cervicalScreening','cervicalReferred','tbContactDone','leprosyContactDone'
 ];
