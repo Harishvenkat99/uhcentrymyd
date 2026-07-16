@@ -1673,7 +1673,6 @@ function setDashTile(tileId, valueId, avg, goodThreshold){
 function updateHscDashboard(){
   const hsc = document.getElementById('hscSelect').value;
   const note = document.getElementById('dashNote');
-  const DAYS = 7;
 
   if(!hsc){
     note.textContent = 'Select a facility below to see performance.';
@@ -1686,15 +1685,25 @@ function updateHscDashboard(){
     return;
   }
 
-  const today = new Date();
-  const windowStart = new Date();
-  windowStart.setDate(today.getDate() - (DAYS - 1));
-  const startStr = toDateStr(windowStart);
-  const endStr = toDateStr(today);
+  const list = (window.entriesCache || []).filter(e=> e.hsc === hsc && e.pDate);
 
-  const list = (window.entriesCache || []).filter(e=>
-    e.hsc === hsc && e.pDate && e.pDate >= startStr && e.pDate <= endStr
-  );
+  if(list.length === 0){
+    note.textContent = `No entries yet for ${hsc}`;
+    ['dashOpValue','dashEsanjeevaniValue','dashCancerValue','dashNcdValue'].forEach(id=>{
+      document.getElementById(id).textContent = '—';
+    });
+    ['dashOpTile','dashEsanjeevaniTile','dashCancerTile','dashNcdTile'].forEach(id=>{
+      document.getElementById(id).classList.remove('dash-good', 'dash-bad');
+    });
+    return;
+  }
+
+  const firstDateStr = list.reduce((min, e)=> e.pDate < min ? e.pDate : min, list[0].pDate);
+  const firstDate = new Date(firstDateStr + 'T00:00:00');
+  const today = new Date();
+  const todayStr = toDateStr(today);
+  const msPerDay = 24 * 60 * 60 * 1000;
+  const daysSinceFirst = Math.floor((new Date(todayStr + 'T00:00:00') - firstDate) / msPerDay) + 1;
 
   const opCount = list.length;
   const esanjeevaniCount = list.filter(e=> e.consultType === 'eSanjeevani').length;
@@ -1702,12 +1711,12 @@ function updateHscDashboard(){
     sum + (e.oralScreening ? 1 : 0) + (e.breastScreening ? 1 : 0) + (e.cervicalScreening === 'Yes' ? 1 : 0), 0);
   const ncdCount = list.filter(e=> e.ncdScreeningType).length;
 
-  note.textContent = `Last ${DAYS} days — ${hsc}`;
+  note.textContent = `Since ${firstDateStr} — ${hsc}`;
 
-  setDashTile('dashOpTile', 'dashOpValue', opCount / DAYS, 10);
-  setDashTile('dashEsanjeevaniTile', 'dashEsanjeevaniValue', esanjeevaniCount / DAYS, 10);
-  setDashTile('dashCancerTile', 'dashCancerValue', cancerCount / DAYS, 2);
-  setDashTile('dashNcdTile', 'dashNcdValue', ncdCount / DAYS, null);
+  setDashTile('dashOpTile', 'dashOpValue', opCount / daysSinceFirst, 10);
+  setDashTile('dashEsanjeevaniTile', 'dashEsanjeevaniValue', esanjeevaniCount / daysSinceFirst, 10);
+  setDashTile('dashCancerTile', 'dashCancerValue', cancerCount / daysSinceFirst, 2);
+  setDashTile('dashNcdTile', 'dashNcdValue', ncdCount / daysSinceFirst, null);
 }
 
 /* ---------- pill (radio-as-button) behaviour ---------- */
