@@ -958,66 +958,184 @@
     </div>
   </section>
 
-  <!-- STEP 6: NCD & CANCER SCREENING -->
+  <!-- STEP 6: NCD -->
   <section class="step" data-step="6">
     <div class="step-head" onclick="toggleStep(this)">
       <div class="step-num">6</div>
       <div class="titles">
-        <h2>NCD &amp; Cancer Screening</h2>
-        <p>HT/DM screening, oral/breast/cervical</p>
+        <h2>NCD</h2>
+        <p>HT/DM screening, oral/breast/cervical cancer</p>
       </div>
       <div class="chev">▾</div>
     </div>
     <div class="step-body">
       <div class="field">
-        <label>NCD Screening</label>
-        <select id="ncdScreening">
-          <option value="">—</option>
-          <option>HT</option>
-          <option>DM</option>
-          <option>Both</option>
+        <label for="ncdScreeningType">Screening type</label>
+        <select id="ncdScreeningType">
+          <option value="">— Select —</option>
+          <option>Known HT</option>
+          <option>Known DM</option>
+          <option>Known Both (HT &amp; DM)</option>
+          <option>New HT</option>
+          <option>New DM</option>
+          <option>New Both (HT &amp; DM)</option>
         </select>
       </div>
       <div class="field">
-        <label>NCD Follow-up</label>
-        <select id="ncdFollowup">
-          <option value="">—</option>
-          <option>HT</option>
-          <option>DM</option>
-          <option>Both</option>
+        <label for="ncdFollowupDetail">Follow up</label>
+        <select id="ncdFollowupDetail">
+          <option value="">— Select —</option>
+          <option>If New - Referred to PHC for confirmation</option>
+          <option>If Old case - Values are Normal</option>
+          <option>If Old case - Values are abnormal, referred to PHC</option>
         </select>
       </div>
-      <div class="subhead">Cancer Screening</div>
+
+      <div class="subhead">Oral Cancer Screening</div>
       <div class="field">
-        <label>Method</label>
-        <select id="cancerMethod">
-          <option value="">—</option>
-          <option>Oral</option>
+        <label for="oralScreening">Oral Screening</label>
+        <select id="oralScreening">
+          <option value="">— Select —</option>
+          <option>With Toluidine Blue</option>
+          <option>Without Toluidine Blue</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="oralResult">Screening Positive/Negative</label>
+        <select id="oralResult">
+          <option value="">— Select —</option>
+          <option>Positive</option>
+          <option>Negative</option>
+        </select>
+      </div>
+
+      <div class="subhead">Breast Cancer Screening</div>
+      <div class="field">
+        <label for="breastScreening">Screening type</label>
+        <select id="breastScreening">
+          <option value="">— Select —</option>
           <option>SBE</option>
-          <option>VIA</option>
+          <option>CBE</option>
         </select>
       </div>
       <div class="field">
-        <label>Screening Result</label>
-        <fieldset class="pillgroup" data-name="cancerResult"><legend>Screening Result</legend>
-          <label class="pill"><input type="radio" name="cancerResult" value="Positive">Positive</label>
-          <label class="pill"><input type="radio" name="cancerResult" value="Negative">Negative</label>
+        <label for="breastResult">Screening Positive/Negative</label>
+        <select id="breastResult">
+          <option value="">— Select —</option>
+          <option>Positive</option>
+          <option>Negative</option>
+        </select>
+      </div>
+
+      <div class="subhead">Cervical Cancer Screening</div>
+      <div class="field">
+        <label>Visual inspection Acid Screening</label>
+        <fieldset class="pillgroup" data-name="cervicalScreening"><legend>Visual inspection Acid Screening</legend>
+          <label class="pill"><input type="radio" name="cervicalScreening" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="cervicalScreening" value="No">No</label>
         </fieldset>
       </div>
-      <div class="field full">
-        <label>Entered in MTM Portal</label>
-        <fieldset class="pillgroup" data-name="cancerMtmPortal"><legend>Entered in MTM Portal</legend>
-          <label class="pill"><input type="radio" name="cancerMtmPortal" value="Positive">Positive</label>
-          <label class="pill"><input type="radio" name="cancerMtmPortal" value="Negative">Negative</label>
+      <div class="field">
+        <label for="cervicalResult">Screening Positive/Negative</label>
+        <select id="cervicalResult">
+          <option value="">— Select —</option>
+          <option>Positive</option>
+          <option>Negative</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>If Positive, referred to Higher Facility</label>
+        <fieldset class="pillgroup" data-name="cervicalReferred"><legend>Referred to Higher Facility</legend>
+          <label class="pill"><input type="radio" name="cervicalReferred" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="cervicalReferred" value="No">No</label>
         </fieldset>
       </div>
     </div>
   </section>
 
-  <!-- STEP 7: VITALS & DIAGNOSTICS -->
+  <!-- STEP 7: TB AND LEPROSY -->
   <section class="step" data-step="7">
     <div class="step-head" onclick="toggleStep(this)">
       <div class="step-num">7</div>
+      <div class="titles">
+        <h2>TB and Leprosy</h2>
+        <p>Screening, treatment dates, contact screening</p>
+      </div>
+      <div class="chev">▾</div>
+    </div>
+    <div class="step-body">
+      <div class="subhead">TB</div>
+      <div class="field">
+        <label for="tbScreening">TB screening</label>
+        <select id="tbScreening">
+          <option value="">— Select —</option>
+          <option>Positive</option>
+          <option>Negative</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="tbTreatmentDate">Treatment initiated date</label>
+        <input type="date" id="tbTreatmentDate">
+      </div>
+      <div class="field">
+        <label>If TB positive, whether Contact Screening done</label>
+        <fieldset class="pillgroup" data-name="tbContactDone"><legend>Contact Screening done</legend>
+          <label class="pill"><input type="radio" name="tbContactDone" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="tbContactDone" value="No">No</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label for="tbContactScreening">Contact Screening</label>
+        <select id="tbContactScreening">
+          <option value="">— Select —</option>
+          <option>Positive</option>
+          <option>Negative</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="tbContactTreatmentDate">Contact Screening Treatment initiated date</label>
+        <input type="date" id="tbContactTreatmentDate">
+      </div>
+
+      <div class="subhead">Leprosy</div>
+      <div class="field">
+        <label for="leprosyScreening">Leprosy screening</label>
+        <select id="leprosyScreening">
+          <option value="">— Select —</option>
+          <option>Positive</option>
+          <option>Negative</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="leprosyTreatmentDate">Treatment initiated date</label>
+        <input type="date" id="leprosyTreatmentDate">
+      </div>
+      <div class="field">
+        <label>If Leprosy positive, whether Contact Screening done</label>
+        <fieldset class="pillgroup" data-name="leprosyContactDone"><legend>Contact Screening done</legend>
+          <label class="pill"><input type="radio" name="leprosyContactDone" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="leprosyContactDone" value="No">No</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label for="leprosyContactScreening">Contact Screening</label>
+        <select id="leprosyContactScreening">
+          <option value="">— Select —</option>
+          <option>Positive</option>
+          <option>Negative</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="leprosyContactTreatmentDate">Contact Screening Treatment initiated date</label>
+        <input type="date" id="leprosyContactTreatmentDate">
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 8: VITALS & DIAGNOSTICS -->
+  <section class="step" data-step="8">
+    <div class="step-head" onclick="toggleStep(this)">
+      <div class="step-num">8</div>
       <div class="titles">
         <h2>Vital Signs &amp; Diagnostics</h2>
         <p>BP, Hb, blood sugar, urine tests</p>
@@ -1135,10 +1253,10 @@
     </div>
   </section>
 
-  <!-- STEP 8: DRUGS DISPENSED -->
-  <section class="step" data-step="8">
+  <!-- STEP 9: DRUGS DISPENSED -->
+  <section class="step" data-step="9">
     <div class="step-head" onclick="toggleStep(this)">
-      <div class="step-num">8</div>
+      <div class="step-num">9</div>
       <div class="titles">
         <h2>Drugs Dispensed</h2>
         <p>Kit A/B, NCD, EDL, Family Welfare</p>
@@ -1376,7 +1494,10 @@ const FIELD_IDS = [
   'painComplaint','painTreatment','chestPainComplaint','chestPainTreatment',
   'eyeComplaint','eyeTreatment','entComplaint','entTreatment','mentalIllness',
   'dogCategory','arvGiven','injuryType',
-  'ncdScreening','ncdFollowup','cancerMethod',
+  'ncdScreeningType','ncdFollowupDetail',
+  'oralScreening','oralResult','breastScreening','breastResult','cervicalResult',
+  'tbScreening','tbTreatmentDate','tbContactScreening','tbContactTreatmentDate',
+  'leprosyScreening','leprosyTreatmentDate','leprosyContactScreening','leprosyContactTreatmentDate',
   'bp','temp','spo2','hbValue','anemia','bloodSugar','urineSugar','investigationOthers',
   'iodineTests','waterTests',
   'calciumGivenTo','calciumQty','ifaGivenTo','ifaQty','wifsGiven','wifsQty',
@@ -1387,9 +1508,10 @@ const FIELD_IDS = [
 ];
 const RADIO_GROUPS = [
   'aamPortal','picme','mtm','hmis','injTd',
-  'emergencyReferred','cancerResult','cancerMtmPortal','upt','urineAlbumin','hiv',
+  'emergencyReferred','upt','urineAlbumin','hiv',
   'hbsag','vdrl','sputumAfb','peripheralSmear','familyWelfare',
-  'cardiacManaged','mentalReferred','arvCategory3Referred'
+  'cardiacManaged','mentalReferred','arvCategory3Referred',
+  'cervicalScreening','cervicalReferred','tbContactDone','leprosyContactDone'
 ];
 
 function getRadioValue(name){
