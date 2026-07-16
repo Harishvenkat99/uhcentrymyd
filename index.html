@@ -15,6 +15,7 @@
     --teal-light:#e6f3f0;
     --amber:#c8791a;
     --red:#b93b3b;
+    --green:#1f8a4c;
     --muted:#5f7a72;
     --shadow: 0 1px 2px rgba(15,109,92,.06), 0 6px 20px rgba(15,109,92,.06);
     --radius: 14px;
@@ -190,6 +191,27 @@
   .btn-ghost{ background:#fff; color:var(--ink); border-color:var(--line); flex:1 1 130px; }
   .btn-danger{ background:#fff; color:var(--red); border-color:#f0c9c9; flex:1 1 130px; }
   .btn-amber{ background:#fff; color:var(--amber); border-color:#efd7b0; flex:1 1 130px; }
+
+  .hsc-dashboard{
+    max-width:720px; margin:16px auto 0; padding:0 14px;
+  }
+  .hsc-dashboard .card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:14px 16px;
+  }
+  .hsc-dashboard h3{ margin:0 0 10px; font-size:.95rem; }
+  .hsc-dashboard .dash-note{ font-size:.78rem; color:var(--muted); margin:0 0 10px; }
+  .dash-grid{
+    display:grid; grid-template-columns:repeat(2, 1fr); gap:10px;
+  }
+  .dash-tile{
+    border:1px solid var(--line); border-radius:12px; padding:10px 12px;
+    background:var(--paper);
+  }
+  .dash-tile .dash-label{ font-size:.72rem; color:var(--muted); margin-bottom:4px; }
+  .dash-tile .dash-value{ font-size:1.25rem; font-weight:700; color:var(--ink); }
+  .dash-tile.dash-good .dash-value{ color:var(--green); }
+  .dash-tile.dash-bad .dash-value{ color:var(--red); }
 
   .entries{
     max-width:720px; margin:20px auto 0; padding:0 14px;
@@ -469,6 +491,31 @@
 </header>
 
 <main>
+
+  <div class="hsc-dashboard" id="hscDashboard">
+    <div class="card">
+      <h3>Your HSC Performance</h3>
+      <p class="dash-note" id="dashNote">Select a facility below to see performance.</p>
+      <div class="dash-grid">
+        <div class="dash-tile" id="dashOpTile">
+          <div class="dash-label">Avg. OP Entered / day</div>
+          <div class="dash-value" id="dashOpValue">—</div>
+        </div>
+        <div class="dash-tile" id="dashEsanjeevaniTile">
+          <div class="dash-label">Avg. eSanjeevani Calls / day</div>
+          <div class="dash-value" id="dashEsanjeevaniValue">—</div>
+        </div>
+        <div class="dash-tile" id="dashCancerTile">
+          <div class="dash-label">Avg. Cancer Screening / day</div>
+          <div class="dash-value" id="dashCancerValue">—</div>
+        </div>
+        <div class="dash-tile" id="dashNcdTile">
+          <div class="dash-label">Avg. NCD Screened / day</div>
+          <div class="dash-value" id="dashNcdValue">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- STEP 0: FACILITY -->
   <section class="step" data-step="0">
@@ -1609,6 +1656,58 @@ function updateEntriesHeading(){
   const phc = document.getElementById('phcSelect').value;
   const heading = document.getElementById('entriesHeading');
   heading.textContent = hsc ? `Today's Entries — ${hsc} (${phc})` : "Today's Entries — select a facility";
+  updateHscDashboard();
+}
+
+/* ---------- HSC performance dashboard (avg. per day, last 7 days) ---------- */
+function setDashTile(tileId, valueId, avg, goodThreshold){
+  const tile = document.getElementById(tileId);
+  const valueEl = document.getElementById(valueId);
+  valueEl.textContent = avg.toFixed(1);
+  tile.classList.remove('dash-good', 'dash-bad');
+  if(goodThreshold !== null){
+    tile.classList.add(avg >= goodThreshold ? 'dash-good' : 'dash-bad');
+  }
+}
+
+function updateHscDashboard(){
+  const hsc = document.getElementById('hscSelect').value;
+  const note = document.getElementById('dashNote');
+  const DAYS = 7;
+
+  if(!hsc){
+    note.textContent = 'Select a facility below to see performance.';
+    ['dashOpValue','dashEsanjeevaniValue','dashCancerValue','dashNcdValue'].forEach(id=>{
+      document.getElementById(id).textContent = '—';
+    });
+    ['dashOpTile','dashEsanjeevaniTile','dashCancerTile','dashNcdTile'].forEach(id=>{
+      document.getElementById(id).classList.remove('dash-good', 'dash-bad');
+    });
+    return;
+  }
+
+  const today = new Date();
+  const windowStart = new Date();
+  windowStart.setDate(today.getDate() - (DAYS - 1));
+  const startStr = toDateStr(windowStart);
+  const endStr = toDateStr(today);
+
+  const list = (window.entriesCache || []).filter(e=>
+    e.hsc === hsc && e.pDate && e.pDate >= startStr && e.pDate <= endStr
+  );
+
+  const opCount = list.length;
+  const esanjeevaniCount = list.filter(e=> e.consultType === 'eSanjeevani').length;
+  const cancerCount = list.reduce((sum, e)=>
+    sum + (e.oralScreening ? 1 : 0) + (e.breastScreening ? 1 : 0) + (e.cervicalScreening === 'Yes' ? 1 : 0), 0);
+  const ncdCount = list.filter(e=> e.ncdScreeningType).length;
+
+  note.textContent = `Last ${DAYS} days — ${hsc}`;
+
+  setDashTile('dashOpTile', 'dashOpValue', opCount / DAYS, 10);
+  setDashTile('dashEsanjeevaniTile', 'dashEsanjeevaniValue', esanjeevaniCount / DAYS, 10);
+  setDashTile('dashCancerTile', 'dashCancerValue', cancerCount / DAYS, 2);
+  setDashTile('dashNcdTile', 'dashNcdValue', ncdCount / DAYS, null);
 }
 
 /* ---------- pill (radio-as-button) behaviour ---------- */
@@ -1718,6 +1817,7 @@ function loadEntries(){
 window.onEntriesUpdated = function(){
   renderEntries();
   refreshActiveReport();
+  updateHscDashboard();
 };
 
 // Fires once when the signed-in user is confirmed 'active'.
