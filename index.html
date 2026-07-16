@@ -564,12 +564,34 @@
     <div class="step-head" onclick="toggleStep(this)">
       <div class="step-num">2</div>
       <div class="titles">
-        <h2>Consultation &amp; Portal Entry</h2>
-        <p>Performance details</p>
+        <h2>Consultation</h2>
+        <p>CPHC service, consultation type</p>
       </div>
       <div class="chev">▾</div>
     </div>
     <div class="step-body">
+      <div class="field full">
+        <label for="cphcService">Type of CPHC service</label>
+        <select id="cphcService">
+          <option value="">— Select —</option>
+          <option>Pregnancy (ANC)</option>
+          <option>Delivered Mother (PNC)</option>
+          <option>Children</option>
+          <option>Adolescent</option>
+          <option>Minor Ailments</option>
+          <option>Communicable Diseases</option>
+          <option>NCD</option>
+          <option>Geriatric</option>
+          <option>Mental Illness</option>
+          <option>Oral</option>
+          <option>Family Welfare</option>
+          <option>Eye</option>
+          <option>ENT</option>
+          <option>Palliative</option>
+          <option>Physiotherapy</option>
+          <option>Emergency and Trauma</option>
+        </select>
+      </div>
       <div class="field full">
         <label for="consultType">Type of Consultation</label>
         <select id="consultType">
@@ -578,6 +600,20 @@
           <option>eSanjeevani</option>
         </select>
       </div>
+    </div>
+  </section>
+
+  <!-- STEP 3: PORTAL ENTRY -->
+  <section class="step" data-step="3">
+    <div class="step-head" onclick="toggleStep(this)">
+      <div class="step-num">3</div>
+      <div class="titles">
+        <h2>Portal Entry</h2>
+        <p>Performance details</p>
+      </div>
+      <div class="chev">▾</div>
+    </div>
+    <div class="step-body">
       <div class="subhead">Details entered in portal</div>
       <div class="field">
         <label>AAM Portal</label>
@@ -610,10 +646,10 @@
     </div>
   </section>
 
-  <!-- STEP 3: SYMPTOMS / INJURY / EMERGENCY -->
-  <section class="step" data-step="3">
+  <!-- STEP 4: SYMPTOMS / INJURY / EMERGENCY -->
+  <section class="step" data-step="4">
     <div class="step-head" onclick="toggleStep(this)">
-      <div class="step-num">3</div>
+      <div class="step-num">4</div>
       <div class="titles">
         <h2>Symptoms, Injury &amp; Emergency</h2>
         <p>Fever, eye/ENT, dog bite, injury</p>
@@ -725,10 +761,10 @@
     </div>
   </section>
 
-  <!-- STEP 4: NCD & CANCER SCREENING -->
-  <section class="step" data-step="4">
+  <!-- STEP 5: NCD & CANCER SCREENING -->
+  <section class="step" data-step="5">
     <div class="step-head" onclick="toggleStep(this)">
-      <div class="step-num">4</div>
+      <div class="step-num">5</div>
       <div class="titles">
         <h2>NCD &amp; Cancer Screening</h2>
         <p>HT/DM screening, oral/breast/cervical</p>
@@ -781,10 +817,10 @@
     </div>
   </section>
 
-  <!-- STEP 5: VITALS & DIAGNOSTICS -->
-  <section class="step" data-step="5">
+  <!-- STEP 6: VITALS & DIAGNOSTICS -->
+  <section class="step" data-step="6">
     <div class="step-head" onclick="toggleStep(this)">
-      <div class="step-num">5</div>
+      <div class="step-num">6</div>
       <div class="titles">
         <h2>Vital Signs &amp; Diagnostics</h2>
         <p>BP, Hb, blood sugar, urine tests</p>
@@ -902,10 +938,10 @@
     </div>
   </section>
 
-  <!-- STEP 6: DRUGS DISPENSED -->
-  <section class="step" data-step="6">
+  <!-- STEP 7: DRUGS DISPENSED -->
+  <section class="step" data-step="7">
     <div class="step-head" onclick="toggleStep(this)">
-      <div class="step-num">6</div>
+      <div class="step-num">7</div>
       <div class="titles">
         <h2>Drugs Dispensed</h2>
         <p>Kit A/B, NCD, EDL, Family Welfare</p>
@@ -1137,7 +1173,7 @@ function toggleStep(headEl){
 /* ---------- data collection ---------- */
 const FIELD_IDS = [
   'pDate','uniqueId','pName','patientAge','pGender','pPhone','pType',
-  'consultType',
+  'cphcService','consultType',
   'fever','eye','ent','symptomOther','dogCategory','arvGiven','injuryType',
   'ncdScreening','ncdFollowup','cancerMethod',
   'bp','temp','spo2','hbValue','anemia','bloodSugar','urineSugar','investigationOthers',
