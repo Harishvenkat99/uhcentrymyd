@@ -473,7 +473,6 @@
   <!-- STEP 0: FACILITY -->
   <section class="step" data-step="0">
     <div class="step-head" onclick="toggleStep(this)">
-      <div class="step-num">0</div>
       <div class="titles">
         <h2>Facility</h2>
         <p>Block, PHC and HWC / HSC</p>
@@ -1534,6 +1533,7 @@ function onBlockChange(){
   if(!block){
     phcSel.innerHTML = '<option value="">Select Block first</option>';
     phcSel.disabled = true;
+    saveFacilitySelection();
     return;
   }
   phcSel.disabled = false;
@@ -1541,6 +1541,7 @@ function onBlockChange(){
   Object.keys(HIERARCHY[block]).sort().forEach(phc=>{
     phcSel.appendChild(new Option(phc, phc));
   });
+  saveFacilitySelection();
 }
 
 function onPhcChange(){
@@ -1551,6 +1552,7 @@ function onPhcChange(){
   if(!phc){
     hscSel.innerHTML = '<option value="">Select PHC first</option>';
     hscSel.disabled = true;
+    saveFacilitySelection();
     return;
   }
   hscSel.disabled = false;
@@ -1558,7 +1560,48 @@ function onPhcChange(){
   HIERARCHY[block][phc].slice().sort().forEach(hsc=>{
     hscSel.appendChild(new Option(hsc, hsc));
   });
-  hscSel.onchange = updateEntriesHeading;
+  hscSel.onchange = function(){ updateEntriesHeading(); saveFacilitySelection(); };
+  saveFacilitySelection();
+}
+
+/* ---------- remember last-used Block/PHC/HSC per signed-in user ---------- */
+function facilityStorageKey(){
+  return window.currentUser ? 'lastFacility_' + window.currentUser.uid : null;
+}
+
+function saveFacilitySelection(){
+  const key = facilityStorageKey();
+  if(!key) return;
+  const block = document.getElementById('blockSelect').value;
+  const phc = document.getElementById('phcSelect').value;
+  const hsc = document.getElementById('hscSelect').value;
+  localStorage.setItem(key, JSON.stringify({block, phc, hsc}));
+}
+
+function restoreFacilitySelection(){
+  const key = facilityStorageKey();
+  if(!key) return;
+  const saved = localStorage.getItem(key);
+  if(!saved) return;
+  let facility;
+  try{ facility = JSON.parse(saved); }catch(e){ return; }
+  if(!facility || !facility.block) return;
+
+  const blockSel = document.getElementById('blockSelect');
+  blockSel.value = facility.block;
+  if(blockSel.value !== facility.block) return;
+  onBlockChange();
+
+  if(!facility.phc) return;
+  const phcSel = document.getElementById('phcSelect');
+  phcSel.value = facility.phc;
+  if(phcSel.value !== facility.phc) return;
+  onPhcChange();
+
+  if(!facility.hsc) return;
+  const hscSel = document.getElementById('hscSelect');
+  hscSel.value = facility.hsc;
+  if(hscSel.value === facility.hsc) updateEntriesHeading();
 }
 
 function updateEntriesHeading(){
@@ -1689,6 +1732,7 @@ window.onUserActive = function(){
   if(headerSub) headerSub.style.display = window.isAdmin ? '' : 'none';
   const adminOnlySection = document.getElementById('adminOnlySection');
   if(adminOnlySection) adminOnlySection.style.display = window.isAdmin ? '' : 'none';
+  restoreFacilitySelection();
 };
 
 async function saveEntry(){
