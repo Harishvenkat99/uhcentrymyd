@@ -618,29 +618,36 @@
       <div class="field">
         <label>AAM Portal</label>
         <fieldset class="pillgroup" data-name="aamPortal"><legend>AAM Portal</legend>
-          <label class="pill"><input type="radio" name="aamPortal" value="Positive">Positive</label>
-          <label class="pill"><input type="radio" name="aamPortal" value="Negative">Negative</label>
+          <label class="pill"><input type="radio" name="aamPortal" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="aamPortal" value="No">No</label>
         </fieldset>
       </div>
       <div class="field">
         <label>PICME</label>
         <fieldset class="pillgroup" data-name="picme"><legend>PICME</legend>
-          <label class="pill"><input type="radio" name="picme" value="Positive">Positive</label>
-          <label class="pill"><input type="radio" name="picme" value="Negative">Negative</label>
+          <label class="pill"><input type="radio" name="picme" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="picme" value="No">No</label>
         </fieldset>
       </div>
       <div class="field">
         <label>MTM</label>
         <fieldset class="pillgroup" data-name="mtm"><legend>MTM</legend>
-          <label class="pill"><input type="radio" name="mtm" value="Positive">Positive</label>
-          <label class="pill"><input type="radio" name="mtm" value="Negative">Negative</label>
+          <label class="pill"><input type="radio" name="mtm" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="mtm" value="No">No</label>
         </fieldset>
       </div>
       <div class="field">
         <label>HMIS</label>
         <fieldset class="pillgroup" data-name="hmis"><legend>HMIS</legend>
-          <label class="pill"><input type="radio" name="hmis" value="Positive">Positive</label>
-          <label class="pill"><input type="radio" name="hmis" value="Negative">Negative</label>
+          <label class="pill"><input type="radio" name="hmis" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="hmis" value="No">No</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>IHIP</label>
+        <fieldset class="pillgroup" data-name="ihip"><legend>IHIP</legend>
+          <label class="pill"><input type="radio" name="ihip" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="ihip" value="No">No</label>
         </fieldset>
       </div>
     </div>
@@ -1138,12 +1145,11 @@
       <div class="step-num">8</div>
       <div class="titles">
         <h2>Vital Signs</h2>
-        <p>BP, temperature, SpO2, field investigations</p>
+        <p>BP, temperature, SpO2</p>
       </div>
       <div class="chev">▾</div>
     </div>
     <div class="step-body">
-      <div class="subhead">Vital Signs</div>
       <div class="field">
         <label>Blood Pressure</label>
         <input type="text" id="bp" placeholder="e.g. 120/80">
@@ -1155,34 +1161,6 @@
       <div class="field">
         <label>SpO2 (%)</label>
         <input type="number" id="spo2">
-      </div>
-
-      <div class="subhead">Investigations — UHC MPHW (Health Inspector) Grade-II</div>
-      <div class="field">
-        <label>Iodine in Salt — tests done</label>
-        <input type="number" id="iodineTests">
-      </div>
-      <div class="field">
-        <label>Water Testing — tests done</label>
-        <input type="number" id="waterTests">
-      </div>
-      <div class="field">
-        <label>Sputum for AFB</label>
-        <fieldset class="pillgroup" data-name="sputumAfb"><legend>Sputum AFB</legend>
-          <label class="pill"><input type="radio" name="sputumAfb" value="Yes">Yes</label>
-          <label class="pill"><input type="radio" name="sputumAfb" value="No">No</label>
-        </fieldset>
-      </div>
-      <div class="field">
-        <label>Peripheral Smear — Malaria</label>
-        <fieldset class="pillgroup" data-name="peripheralSmear"><legend>Peripheral Smear</legend>
-          <label class="pill"><input type="radio" name="peripheralSmear" value="Yes">Yes</label>
-          <label class="pill"><input type="radio" name="peripheralSmear" value="No">No</label>
-        </fieldset>
-      </div>
-      <div class="field full">
-        <label>Others, if any</label>
-        <input type="text" id="investigationOthers">
       </div>
     </div>
   </section>
@@ -1270,111 +1248,226 @@
     </div>
   </section>
 
-  <!-- STEP 10: DRUGS DISPENSED -->
+  <!-- STEP 10: INVESTIGATIONS BY HEALTH INSPECTOR -->
   <section class="step" data-step="10">
     <div class="step-head" onclick="toggleStep(this)">
       <div class="step-num">10</div>
       <div class="titles">
-        <h2>Drugs Dispensed</h2>
-        <p>Kit A/B, NCD, EDL, Family Welfare</p>
+        <h2>Investigations by Health Inspector</h2>
+        <p>Iodine, water, sputum, smear tests</p>
       </div>
       <div class="chev">▾</div>
     </div>
     <div class="step-body">
-      <div class="subhead">Kit A &amp; Kit B Drugs</div>
       <div class="field">
-        <label>Calcium Carbonate — given to</label>
-        <div class="qty-row">
-          <select id="calciumGivenTo">
-            <option value="">—</option>
-            <option>Pregnant Mother</option>
-            <option>Delivered Mother</option>
-          </select>
-          <input type="number" id="calciumQty" placeholder="Qty">
-        </div>
+        <label for="iodineTests">No. of Iodine in salt test done</label>
+        <input type="number" id="iodineTests">
       </div>
       <div class="field">
-        <label>IFA Large — given to</label>
-        <div class="qty-row">
-          <select id="ifaGivenTo">
-            <option value="">—</option>
-            <option>Pregnant Mother</option>
-            <option>Delivered Mother</option>
-          </select>
-          <input type="number" id="ifaQty" placeholder="Qty">
-        </div>
+        <label for="waterTests">No. of Water testing for Coliform test done</label>
+        <input type="number" id="waterTests">
       </div>
       <div class="field">
-        <label>Junior WIFS given</label>
-        <div class="qty-row">
-          <select id="wifsGiven">
-            <option value="">—</option>
-            <option>Yes</option>
-            <option>No</option>
-          </select>
-          <input type="number" id="wifsQty" placeholder="Qty">
-        </div>
+        <label for="sputumAfb">Sputum for AFB</label>
+        <input type="text" id="sputumAfb">
       </div>
       <div class="field">
-        <label>Iron Syrup given</label>
-        <div class="qty-row">
-          <select id="ironSyrupGiven">
-            <option value="">—</option>
-            <option>Yes</option>
-            <option>No</option>
-          </select>
-          <input type="number" id="ironSyrupQty" placeholder="Qty">
-        </div>
+        <label for="peripheralSmear">Peripheral smear for Malaria</label>
+        <input type="text" id="peripheralSmear">
       </div>
       <div class="field">
-        <label>Vitamin A Syrup given</label>
-        <div class="qty-row">
-          <select id="vitAGiven">
-            <option value="">—</option>
-            <option>Yes</option>
-            <option>No</option>
-          </select>
-          <input type="number" id="vitAQty" placeholder="Qty">
-        </div>
+        <label for="smearFilaria">Smear for Filaria</label>
+        <input type="text" id="smearFilaria">
       </div>
-      <div class="field">
-        <label>Others — drug name</label>
-        <div class="qty-row">
-          <input type="text" id="kitOtherName" placeholder="Drug name">
-          <input type="number" id="kitOtherQty" placeholder="Qty">
-        </div>
-      </div>
-
-      <div class="subhead">NCD Drugs — No. of Tablets Given</div>
-      <div class="field"><label>Metformin</label><input type="number" id="ncdMetformin"></div>
-      <div class="field"><label>Amlodipine</label><input type="number" id="ncdAmlodipine"></div>
-      <div class="field"><label>Glimepiride</label><input type="number" id="ncdGlimepiride"></div>
-      <div class="field"><label>Glibenclamide</label><input type="number" id="ncdGlibenclamide"></div>
-      <div class="field"><label>Sitagliptin</label><input type="number" id="ncdSitagliptin"></div>
-
-      <div class="subhead">EDL Drugs</div>
-      <div class="field"><label>Norfloxacin</label><input type="number" id="edlNorfloxacin"></div>
-      <div class="field"><label>Doxycycline</label><input type="number" id="edlDoxycycline"></div>
-      <div class="field"><label>Co-trimoxazole</label><input type="number" id="edlCotrimoxazole"></div>
-      <div class="field"><label>Amoxicillin</label><input type="number" id="edlAmoxicillin"></div>
-      <div class="field"><label>Ciprofloxacin</label><input type="number" id="edlCiprofloxacin"></div>
-      <div class="field">
-        <label>Other drugs — name</label>
-        <div class="qty-row">
-          <input type="text" id="edlOtherName" placeholder="Drug name">
-          <input type="number" id="edlOtherQty" placeholder="Qty">
-        </div>
-      </div>
-
-      <div class="subhead">Family Welfare Drugs</div>
       <div class="field full">
-        <fieldset class="pillgroup" data-name="familyWelfare"><legend>Family Welfare</legend>
-          <label class="pill"><input type="radio" name="familyWelfare" value="Chhaya">Chhaya</label>
-          <label class="pill"><input type="radio" name="familyWelfare" value="Antara">Antara</label>
-          <label class="pill"><input type="radio" name="familyWelfare" value="EC Pills">EC Pills</label>
-          <label class="pill"><input type="radio" name="familyWelfare" value="Referred for Medical Management for abortion (MMA)">Referred for MMA</label>
-          <label class="pill"><input type="radio" name="familyWelfare" value="Referred for Medical Termination of Pregnacy (MTP)">Referred for MTP</label>
+        <label for="investigationOthers">Others if any</label>
+        <input type="text" id="investigationOthers">
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 11: KIT A & KIT B -->
+  <section class="step" data-step="11">
+    <div class="step-head" onclick="toggleStep(this)">
+      <div class="step-num">11</div>
+      <div class="titles">
+        <h2>Kit A &amp; Kit B</h2>
+        <p>Calcium, IFA, WIFS, iron syrup, Kit B drugs</p>
+      </div>
+      <div class="chev">▾</div>
+    </div>
+    <div class="step-body">
+      <div class="field">
+        <label for="calciumGiven">Calcium Carbonate</label>
+        <select id="calciumGiven">
+          <option value="">— Select —</option>
+          <option>Pregnant Mother</option>
+          <option>Delivered Mother</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="ifaGiven">IFA Large</label>
+        <select id="ifaGiven">
+          <option value="">— Select —</option>
+          <option>Pregnant Mother</option>
+          <option>Delivered Mother</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Junior WIFS</label>
+        <fieldset class="pillgroup" data-name="wifsJunior"><legend>Junior WIFS</legend>
+          <label class="pill"><input type="radio" name="wifsJunior" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="wifsJunior" value="No">No</label>
         </fieldset>
+      </div>
+      <div class="field">
+        <label>Senior WIFS</label>
+        <fieldset class="pillgroup" data-name="wifsSenior"><legend>Senior WIFS</legend>
+          <label class="pill"><input type="radio" name="wifsSenior" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="wifsSenior" value="No">No</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>Iron Syrup</label>
+        <fieldset class="pillgroup" data-name="ironSyrupGivenNew"><legend>Iron Syrup</legend>
+          <label class="pill"><input type="radio" name="ironSyrupGivenNew" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="ironSyrupGivenNew" value="No">No</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>Co-trimoxazole</label>
+        <fieldset class="pillgroup" data-name="kitCotrimoxazole"><legend>Co-trimoxazole</legend>
+          <label class="pill"><input type="radio" name="kitCotrimoxazole" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="kitCotrimoxazole" value="No">No</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>T.Paracetamol</label>
+        <fieldset class="pillgroup" data-name="kitParacetamol"><legend>T.Paracetamol</legend>
+          <label class="pill"><input type="radio" name="kitParacetamol" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="kitParacetamol" value="No">No</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>T.Albendazole</label>
+        <fieldset class="pillgroup" data-name="kitAlbendazole"><legend>T.Albendazole</legend>
+          <label class="pill"><input type="radio" name="kitAlbendazole" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="kitAlbendazole" value="No">No</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>T.Di-cyclomine</label>
+        <fieldset class="pillgroup" data-name="kitDicyclomine"><legend>T.Di-cyclomine</legend>
+          <label class="pill"><input type="radio" name="kitDicyclomine" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="kitDicyclomine" value="No">No</label>
+        </fieldset>
+      </div>
+      <div class="field">
+        <label>ORS</label>
+        <fieldset class="pillgroup" data-name="kitOrs"><legend>ORS</legend>
+          <label class="pill"><input type="radio" name="kitOrs" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="kitOrs" value="No">No</label>
+        </fieldset>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 12: ESSENTIAL DRUGS -->
+  <section class="step" data-step="12">
+    <div class="step-head" onclick="toggleStep(this)">
+      <div class="step-num">12</div>
+      <div class="titles">
+        <h2>Essential Drugs</h2>
+        <p>HT/DM/cardiac/antibiotic/other EDL, family welfare</p>
+      </div>
+      <div class="chev">▾</div>
+    </div>
+    <div class="step-body">
+      <div class="field">
+        <label for="htDrugs">HT Drugs</label>
+        <select id="htDrugs">
+          <option value="">— Select —</option>
+          <option>Amlodipine</option>
+          <option>Telmisartan</option>
+          <option>Enalapril</option>
+          <option>Hydrochlorothiazide</option>
+          <option>Furosemide</option>
+          <option>Nifedipine</option>
+          <option>Labetalol</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="dmDrugs">DM Drugs</label>
+        <select id="dmDrugs">
+          <option value="">— Select —</option>
+          <option>Glimepiride</option>
+          <option>Metformin</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="cardiacDrugs">Cardiac Drugs</label>
+        <select id="cardiacDrugs">
+          <option value="">— Select —</option>
+          <option>Aspirin</option>
+          <option>Isosorbide Dinitrate (ISDN)</option>
+          <option>Atorvastatin</option>
+          <option>Clopidogrel</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="antibioticDrugs">Antibiotic Drugs</label>
+        <select id="antibioticDrugs">
+          <option value="">— Select —</option>
+          <option>Amoxicillin</option>
+          <option>Ampicillin</option>
+          <option>Azithromycin</option>
+          <option>Cefalexin</option>
+          <option>Cefixime</option>
+          <option>Ceftriaxone</option>
+          <option>Ciprofloxacin</option>
+          <option>Cloxacillin</option>
+          <option>Cotrimoxazole</option>
+          <option>Doxycycline</option>
+          <option>Erythromycin</option>
+          <option>Gentamicin</option>
+          <option>Metronidazole</option>
+          <option>Nitrofurantoin</option>
+          <option>Norfloxacin</option>
+          <option>Ofloxacin</option>
+          <option>Tinidazole</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="otherEdlDrugs">Other EDL drugs</label>
+        <select id="otherEdlDrugs">
+          <option value="">— Select —</option>
+          <option>Paracetamol</option>
+          <option>Pheniramine Maleate</option>
+          <option>Levocetirizine</option>
+          <option>Ondansetron</option>
+          <option>Domperidone</option>
+          <option>Dexamethasone</option>
+          <option>Deriphylline</option>
+          <option>Adrenaline</option>
+          <option>Atropine</option>
+          <option>Antacid</option>
+          <option>Folic acid</option>
+          <option>Furosemide</option>
+          <option>Albendazole</option>
+          <option>B Complex</option>
+        </select>
+      </div>
+      <div class="field full">
+        <label for="familyWelfare">Family Welfare drugs</label>
+        <select id="familyWelfare">
+          <option value="">— Select —</option>
+          <option>Chhaya</option>
+          <option>Antara</option>
+          <option>EC Pills</option>
+          <option>Condom</option>
+          <option>Referred for Medical Management for abortion (MMA)</option>
+          <option>Referred for Medical Termination of Pregnancy (MTP)</option>
+        </select>
       </div>
     </div>
   </section>
@@ -1515,20 +1608,19 @@ const FIELD_IDS = [
   'oralScreening','oralResult','breastScreening','breastResult','cervicalResult',
   'tbScreening','tbTreatmentDate','tbContactScreening','tbContactTreatmentDate',
   'leprosyScreening','leprosyTreatmentDate','leprosyContactScreening','leprosyContactTreatmentDate',
-  'bp','temp','spo2','investigationOthers',
-  'iodineTests','waterTests',
+  'bp','temp','spo2',
+  'iodineTests','waterTests','sputumAfb','peripheralSmear','smearFilaria','investigationOthers',
   'upt','hbValue','anemia','bloodSugar','urineAlbumin','urineSugar','hiv','hbsag','vdrl',
-  'calciumGivenTo','calciumQty','ifaGivenTo','ifaQty','wifsGiven','wifsQty',
-  'ironSyrupGiven','ironSyrupQty','vitAGiven','vitAQty','kitOtherName','kitOtherQty',
-  'ncdMetformin','ncdAmlodipine','ncdGlimepiride','ncdGlibenclamide','ncdSitagliptin',
-  'edlNorfloxacin','edlDoxycycline','edlCotrimoxazole','edlAmoxicillin','edlCiprofloxacin',
-  'edlOtherName','edlOtherQty'
+  'calciumGiven','ifaGiven',
+  'htDrugs','dmDrugs','cardiacDrugs','antibioticDrugs','otherEdlDrugs','familyWelfare'
 ];
 const RADIO_GROUPS = [
-  'aamPortal','picme','mtm','hmis','injTd',
-  'emergencyReferred','sputumAfb','peripheralSmear','familyWelfare',
+  'aamPortal','picme','mtm','hmis','ihip','injTd',
+  'emergencyReferred',
   'cardiacManaged','mentalReferred','arvCategory3Referred',
-  'cervicalScreening','cervicalReferred','tbContactDone','leprosyContactDone'
+  'cervicalScreening','cervicalReferred','tbContactDone','leprosyContactDone',
+  'wifsJunior','wifsSenior','ironSyrupGivenNew','kitCotrimoxazole',
+  'kitParacetamol','kitAlbendazole','kitDicyclomine','kitOrs'
 ];
 
 function getRadioValue(name){
