@@ -508,8 +508,8 @@
     <div class="step-head" onclick="toggleStep(this)">
       <div class="step-num">1</div>
       <div class="titles">
-        <h2>Patient Details</h2>
-        <p>Date, name, phone, gender, type</p>
+        <h2>Demographics</h2>
+        <p>Date, ID, name, age, gender, phone, type</p>
       </div>
       <div class="chev">▾</div>
     </div>
@@ -519,16 +519,24 @@
         <input type="date" id="pDate">
       </div>
       <div class="field">
+        <label for="uniqueId">Unique ID</label>
+        <input type="text" id="uniqueId" placeholder="Unique ID">
+      </div>
+      <div class="field">
+        <label for="pName">Patient Name</label>
+        <input type="text" id="pName" placeholder="Patient name">
+      </div>
+      <div class="field">
+        <label for="patientAge">Age</label>
+        <input type="number" id="patientAge" min="0" max="120" placeholder="Age">
+      </div>
+      <div class="field">
         <label for="pGender">Gender</label>
         <select id="pGender">
           <option value="">Select</option>
           <option>Male</option>
           <option>Female</option>
         </select>
-      </div>
-      <div class="field">
-        <label for="pName">Patient Name</label>
-        <input type="text" id="pName" placeholder="Patient name">
       </div>
       <div class="field">
         <label for="pPhone">Phone Number</label>
@@ -1128,7 +1136,7 @@ function toggleStep(headEl){
 
 /* ---------- data collection ---------- */
 const FIELD_IDS = [
-  'pDate','pGender','pName','pPhone','pType',
+  'pDate','uniqueId','pName','patientAge','pGender','pPhone','pType',
   'consultType',
   'fever','eye','ent','symptomOther','dogCategory','arvGiven','injuryType',
   'ncdScreening','ncdFollowup','cancerMethod',
