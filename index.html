@@ -888,13 +888,13 @@
     </div>
   </section>
 
-  <!-- STEP 5: DOG BITE, INJURY & EMERGENCY -->
+  <!-- STEP 5: EMERGENCY & TRAUMA CARE -->
   <section class="step" data-step="5">
     <div class="step-head" onclick="toggleStep(this)">
       <div class="step-num">5</div>
       <div class="titles">
-        <h2>Dog Bite, Injury &amp; Emergency</h2>
-        <p>Dog bite, injury, cardiac/emergency referral</p>
+        <h2>Emergency &amp; Trauma Care</h2>
+        <p>Dog bite, ARV, injury, emergency referral</p>
       </div>
       <div class="chev">▾</div>
     </div>
@@ -902,17 +902,16 @@
       <div class="subhead">Dog Bite Case</div>
 
       <div class="field">
-        <label>Category Attended</label>
+        <label>Dog bite case attended</label>
         <select id="dogCategory">
           <option value="">—</option>
           <option>Category 1</option>
           <option>Category 2</option>
           <option>Category 3</option>
-          <option>Category 4</option>
         </select>
       </div>
       <div class="field">
-        <label>ARV Given</label>
+        <label>ARV</label>
         <select id="arvGiven">
           <option value="">—</option>
           <option>1st Dose</option>
@@ -921,42 +920,39 @@
           <option>4th Dose</option>
         </select>
       </div>
+      <div class="field">
+        <label>Category 3 Referred to Higher Facility for Immunoglobulin</label>
+        <fieldset class="pillgroup" data-name="arvCategory3Referred"><legend>Category 3 referred for Immunoglobulin</legend>
+          <label class="pill"><input type="radio" name="arvCategory3Referred" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="arvCategory3Referred" value="No">No</label>
+        </fieldset>
+      </div>
 
       <div class="subhead">Injury / Emergency</div>
       <div class="field">
-        <label>Injury / Emergency Type</label>
+        <label>Injury / Emergency</label>
         <select id="injuryType">
           <option value="">—</option>
-          <option>Injury</option>
-          <option>Poisoning</option>
+          <option>Injury/Accident</option>
           <option>Snake Bite</option>
           <option>Insect bite</option>
           <option>Scorpion Sting</option>
           <option>Burns</option>
-          <option>Chest Pain</option>
-          <option>Diarrhea</option>
-          <option>Voimiting</option>
+          <option>Poisoning</option>
         </select>
       </div>
       <div class="field">
-        <label>Emergency case given Inj.Td</label>
+        <label>Emergency cases provided with Inj.Td</label>
         <fieldset class="pillgroup" data-name="injTd"><legend>Inj.Td</legend>
-          <label class="pill"><input type="radio" name="injTd" value="Positive">Positive</label>
-          <label class="pill"><input type="radio" name="injTd" value="Negative">Negative</label>
+          <label class="pill"><input type="radio" name="injTd" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="injTd" value="No">No</label>
         </fieldset>
       </div>
       <div class="field">
-        <label>Cardiac case — loading dose &amp; referred</label>
-        <fieldset class="pillgroup" data-name="cardiacCase"><legend>Cardiac case</legend>
-          <label class="pill"><input type="radio" name="cardiacCase" value="Positive">Positive</label>
-          <label class="pill"><input type="radio" name="cardiacCase" value="Negative">Negative</label>
-        </fieldset>
-      </div>
-      <div class="field">
-        <label>Emergency case referred to higher facility</label>
+        <label>Emergency cases referred to Higher Facility</label>
         <fieldset class="pillgroup" data-name="emergencyReferred"><legend>Emergency referred</legend>
-          <label class="pill"><input type="radio" name="emergencyReferred" value="Positive">Positive</label>
-          <label class="pill"><input type="radio" name="emergencyReferred" value="Negative">Negative</label>
+          <label class="pill"><input type="radio" name="emergencyReferred" value="Yes">Yes</label>
+          <label class="pill"><input type="radio" name="emergencyReferred" value="No">No</label>
         </fieldset>
       </div>
     </div>
@@ -1390,10 +1386,10 @@ const FIELD_IDS = [
   'edlOtherName','edlOtherQty'
 ];
 const RADIO_GROUPS = [
-  'aamPortal','picme','mtm','hmis','injTd','cardiacCase',
+  'aamPortal','picme','mtm','hmis','injTd',
   'emergencyReferred','cancerResult','cancerMtmPortal','upt','urineAlbumin','hiv',
   'hbsag','vdrl','sputumAfb','peripheralSmear','familyWelfare',
-  'cardiacManaged','mentalReferred'
+  'cardiacManaged','mentalReferred','arvCategory3Referred'
 ];
 
 function getRadioValue(name){
