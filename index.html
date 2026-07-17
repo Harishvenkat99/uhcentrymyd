@@ -304,6 +304,7 @@
 <body>
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style/dist/xlsx.bundle.js"></script>
+<script src="excel-columns.js"></script>
 
 <!-- ================= FIREBASE (module) ================= -->
 <script type="module">
@@ -2090,28 +2091,8 @@ function exportExcel(){
   showToast('Exported to CSV');
 }
 
-/* ---------- shared Excel column set (kept in sync with FIELD_IDS/RADIO_GROUPS) ---------- */
-const EXCEL_COLUMNS = ['pDate','block','phc','hsc', ...FIELD_IDS.filter(id=>id!=='pDate'), ...RADIO_GROUPS];
-
-function prettyHeader(id){
-  const overrides = { pDate:'Date', block:'Block', phc:'PHC', hsc:'HWC-HSC Name' };
-  if(overrides[id]) return overrides[id];
-  return id.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/^./, c=>c.toUpperCase());
-}
-
-const EXCEL_HEADERS = ['Sl.No.', ...EXCEL_COLUMNS.map(prettyHeader)];
-
-function excelCellVal(r, key){
-  const v = r[key];
-  if(v === undefined || v === null) return '';
-  const s = String(v).trim();
-  if(s === 'undefined' || s === 'null') return '';
-  return s;
-}
-
-function rowToExcelArray(r, slNo){
-  return [slNo, ...EXCEL_COLUMNS.map(col=> excelCellVal(r, col))];
-}
+/* ---------- EXCEL_HEADERS / EXCEL_COLUMNS / excelVal / rowToExcelArray ---------- */
+/* now defined in excel-columns.js (shared with admin.html) — loaded via <script src="excel-columns.js"> above */
 
 /* ---------- My HSC Reports (non-admin) ---------- */
 let myReportsCache = [];
@@ -2182,7 +2163,7 @@ function downloadMyHscExcel(){
   const hsc = (window.currentUser && window.currentUser.assignedHsc) || 'report';
   const from = document.getElementById('myReportsFrom').value;
   const to = document.getElementById('myReportsTo').value;
-  XLSX.writeFile(wb, `${hsc}_${from}_to_${to}.xlsx`);
+  XLSX.writeFile(wb, `${hsc}_Report_${from}_to_${to}.xlsx`);
 }
 
 /* ---------- reports (Block-wise / PHC-wise / HSC-wise) ---------- */
