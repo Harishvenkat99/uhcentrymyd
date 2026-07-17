@@ -217,6 +217,12 @@
     max-width:720px; margin:20px auto 0; padding:0 14px;
   }
   .entries h3{ font-size:.95rem; margin:0 0 8px; }
+  .mini-controls{ display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; margin-bottom:12px; }
+  .mini-controls .field{ display:flex; flex-direction:column; gap:4px; }
+  .mini-controls .field label{ font-size:.75rem; color:var(--muted); }
+  .mini-controls input[type="date"]{
+    padding:9px; border:1px solid var(--line); border-radius:8px; font-size:.85rem; font-family:inherit;
+  }
   .entry-card{
     background:var(--card); border:1px solid var(--line); border-radius:12px;
     padding:12px 14px; margin-bottom:8px; display:flex; justify-content:space-between; gap:10px;
@@ -271,10 +277,11 @@
   }
   .gate-card h2{ margin:0 0 4px; color:var(--teal-dark); }
   .gate-card p.sub{ margin:0 0 18px; color:var(--muted); font-size:14px; }
-  .gate-card input{
+  .gate-card input, .gate-card select{
     width:100%; padding:12px; margin-bottom:12px; border:1px solid var(--line);
-    border-radius:10px; font-size:15px;
+    border-radius:10px; font-size:15px; font-family:inherit; background:#fff; color:var(--ink);
   }
+  .gate-card label{ display:block; text-align:left; font-size:13px; color:var(--muted); margin:0 0 4px; }
   .gate-card .btn-primary, .gate-card .btn-google, .gate-card .btn-link{
     width:100%; padding:12px; border-radius:10px; font-size:15px; border:none;
     cursor:pointer; margin-bottom:10px; font-weight:600;
@@ -296,6 +303,8 @@
 </head>
 <body>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style/dist/xlsx.bundle.js"></script>
+
 <!-- ================= FIREBASE (module) ================= -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -305,7 +314,7 @@
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import {
     getFirestore, doc, getDoc, setDoc, collection, addDoc, deleteDoc,
-    onSnapshot, query, serverTimestamp
+    onSnapshot, query, where, getDocs, serverTimestamp
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -328,9 +337,10 @@
 
   function showScreen(name){
     document.getElementById('authGate').style.display = name === 'auth' ? 'flex' : 'none';
+    document.getElementById('hscPickScreen').style.display = name === 'hscpick' ? 'flex' : 'none';
     document.getElementById('pendingScreen').style.display = name === 'pending' ? 'flex' : 'none';
     document.getElementById('appContent').style.display = name === 'app' ? 'block' : 'none';
-    document.getElementById('logoutBar').style.display = name === 'app' || name === 'pending' ? 'flex' : 'none';
+    document.getElementById('logoutBar').style.display = (name === 'app' || name === 'pending' || name === 'hscpick') ? 'flex' : 'none';
   }
 
   async function ensureUserDoc(user){
@@ -349,6 +359,8 @@
     return snap.data();
   }
 
+  let pendingAuthUser = null; // firebase user object waiting on the one-time HSC picker
+
   onAuthStateChanged(auth, async (user)=>{
     if(entriesUnsub){ entriesUnsub(); entriesUnsub = null; }
     if(!user){
@@ -358,16 +370,57 @@
     const userData = await ensureUserDoc(user);
     document.getElementById('logoutEmail').textContent = user.email;
     document.getElementById('logoutEmailBar').textContent = user.email;
+    document.getElementById('hscPickLogoutEmail').textContent = user.email;
+
+    if(user.email !== ADMIN_EMAIL && !userData.assignedHsc){
+      pendingAuthUser = user;
+      showScreen('hscpick');
+      return;
+    }
+    proceedPastHscPick(user, userData);
+  });
+
+  function proceedPastHscPick(user, userData){
     if(userData.status !== 'active'){
       showScreen('pending');
       return;
     }
-    window.currentUser = { uid: user.uid, email: user.email, role: userData.role || 'user' };
+    window.currentUser = {
+      uid: user.uid, email: user.email, role: userData.role || 'user',
+      assignedBlock: userData.assignedBlock || '',
+      assignedPhc: userData.assignedPhc || '',
+      assignedHsc: userData.assignedHsc || ''
+    };
     window.isAdmin = userData.role === 'admin';
     showScreen('app');
     if(window.onUserActive) window.onUserActive();
     startEntriesListener();
+  }
+
+  document.getElementById('hscPickConfirmBtn').addEventListener('click', async ()=>{
+    const block = document.getElementById('pickBlockSelect').value;
+    const phc = document.getElementById('pickPhcSelect').value;
+    const hsc = document.getElementById('pickHscSelect').value;
+    const err = document.getElementById('hscPickError');
+    if(!block || !phc || !hsc){
+      err.textContent = 'Select your Block, PHC and HWC/HSC first';
+      return;
+    }
+    err.textContent = '';
+    const btn = document.getElementById('hscPickConfirmBtn');
+    btn.disabled = true;
+    try{
+      await setDoc(doc(db, 'users', pendingAuthUser.uid),
+        { assignedBlock: block, assignedPhc: phc, assignedHsc: hsc }, { merge: true });
+      const freshData = await ensureUserDoc(pendingAuthUser);
+      proceedPastHscPick(pendingAuthUser, freshData);
+    }catch(e){
+      err.textContent = 'Could not save — check your connection';
+      btn.disabled = false;
+    }
   });
+
+  document.getElementById('hscPickLogoutBtn').addEventListener('click', ()=> signOut(auth));
 
   function startEntriesListener(){
     const q = query(collection(db, 'entries'));
@@ -389,6 +442,13 @@
   };
   window.fbDeleteEntry = async (id)=>{
     await deleteDoc(doc(db, 'entries', id));
+  };
+  window.fbQueryEntriesByHsc = async (hsc)=>{
+    const q = query(collection(db, 'entries'), where('hsc', '==', hsc));
+    const snap = await getDocs(q);
+    const list = [];
+    snap.forEach(d=> list.push({ _id: d.id, ...d.data() }));
+    return list;
   };
   window.fbSignOut = ()=> signOut(auth);
 
@@ -462,6 +522,28 @@
     <button class="btn-primary" id="signInBtn">Sign In</button>
     <button class="btn-link" id="signUpBtn">New here? Create an account</button>
     <button class="btn-google" id="googleBtn">Sign in with Google</button>
+  </div>
+</div>
+
+<div class="gate-wrap" id="hscPickScreen" style="display:none;">
+  <div class="gate-card">
+    <h2>Select Your Facility</h2>
+    <p class="sub">Choose the Block, PHC and HWC/HSC you'll be reporting for. This is a one-time setup — an admin can correct it later if needed.</p>
+    <label for="pickBlockSelect">Block</label>
+    <select id="pickBlockSelect" onchange="onPickBlockChange()">
+      <option value="">Select Block</option>
+    </select>
+    <label for="pickPhcSelect">PHC</label>
+    <select id="pickPhcSelect" onchange="onPickPhcChange()" disabled>
+      <option value="">Select Block first</option>
+    </select>
+    <label for="pickHscSelect">HWC / HSC</label>
+    <select id="pickHscSelect" disabled>
+      <option value="">Select PHC first</option>
+    </select>
+    <div class="gate-error" id="hscPickError"></div>
+    <button class="btn-primary" id="hscPickConfirmBtn">Confirm</button>
+    <button class="btn-link" id="hscPickLogoutBtn">Sign out (<span id="hscPickLogoutEmail"></span>)</button>
   </div>
 </div>
 
@@ -1548,6 +1630,19 @@
 
 </div><!-- /#adminOnlySection -->
 
+<div id="myHscReportsSection" style="display:none;">
+<div class="entries">
+  <h3 id="myHscReportsHeading">My Reports</h3>
+  <div class="mini-controls">
+    <div class="field"><label for="myReportsFrom">From</label><input type="date" id="myReportsFrom"></div>
+    <div class="field"><label for="myReportsTo">To</label><input type="date" id="myReportsTo"></div>
+    <button class="btn-ghost" onclick="loadMyHscReport()">Load</button>
+    <button class="btn-amber" onclick="downloadMyHscExcel()">⬇ Download Excel</button>
+  </div>
+  <div id="myReportsList"></div>
+</div>
+</div>
+
 <footer class="note">Data is saved to the shared district database and visible to all approved staff.</footer>
 
 <div class="toast" id="toast"></div>
@@ -1580,7 +1675,6 @@ function onBlockChange(){
   if(!block){
     phcSel.innerHTML = '<option value="">Select Block first</option>';
     phcSel.disabled = true;
-    saveFacilitySelection();
     return;
   }
   phcSel.disabled = false;
@@ -1588,7 +1682,6 @@ function onBlockChange(){
   Object.keys(HIERARCHY[block]).sort().forEach(phc=>{
     phcSel.appendChild(new Option(phc, phc));
   });
-  saveFacilitySelection();
 }
 
 function onPhcChange(){
@@ -1599,7 +1692,6 @@ function onPhcChange(){
   if(!phc){
     hscSel.innerHTML = '<option value="">Select PHC first</option>';
     hscSel.disabled = true;
-    saveFacilitySelection();
     return;
   }
   hscSel.disabled = false;
@@ -1607,48 +1699,52 @@ function onPhcChange(){
   HIERARCHY[block][phc].slice().sort().forEach(hsc=>{
     hscSel.appendChild(new Option(hsc, hsc));
   });
-  hscSel.onchange = function(){ updateEntriesHeading(); saveFacilitySelection(); };
-  saveFacilitySelection();
+  hscSel.onchange = updateEntriesHeading;
 }
 
-/* ---------- remember last-used Block/PHC/HSC per signed-in user ---------- */
-function facilityStorageKey(){
-  return window.currentUser ? 'lastFacility_' + window.currentUser.uid : null;
+/* ---------- one-time HSC picker (gate screen) cascade ---------- */
+function populatePickBlocks(){
+  const sel = document.getElementById('pickBlockSelect');
+  Object.keys(HIERARCHY).sort().forEach(block=>{
+    sel.appendChild(new Option(block, block));
+  });
 }
 
-function saveFacilitySelection(){
-  const key = facilityStorageKey();
-  if(!key) return;
-  const block = document.getElementById('blockSelect').value;
-  const phc = document.getElementById('phcSelect').value;
-  const hsc = document.getElementById('hscSelect').value;
-  localStorage.setItem(key, JSON.stringify({block, phc, hsc}));
+function onPickBlockChange(){
+  const block = document.getElementById('pickBlockSelect').value;
+  const phcSel = document.getElementById('pickPhcSelect');
+  const hscSel = document.getElementById('pickHscSelect');
+  phcSel.innerHTML = '';
+  hscSel.innerHTML = '<option value="">Select PHC first</option>';
+  hscSel.disabled = true;
+
+  if(!block){
+    phcSel.innerHTML = '<option value="">Select Block first</option>';
+    phcSel.disabled = true;
+    return;
+  }
+  phcSel.disabled = false;
+  phcSel.appendChild(new Option('Select PHC',''));
+  Object.keys(HIERARCHY[block]).sort().forEach(phc=>{
+    phcSel.appendChild(new Option(phc, phc));
+  });
 }
 
-function restoreFacilitySelection(){
-  const key = facilityStorageKey();
-  if(!key) return;
-  const saved = localStorage.getItem(key);
-  if(!saved) return;
-  let facility;
-  try{ facility = JSON.parse(saved); }catch(e){ return; }
-  if(!facility || !facility.block) return;
-
-  const blockSel = document.getElementById('blockSelect');
-  blockSel.value = facility.block;
-  if(blockSel.value !== facility.block) return;
-  onBlockChange();
-
-  if(!facility.phc) return;
-  const phcSel = document.getElementById('phcSelect');
-  phcSel.value = facility.phc;
-  if(phcSel.value !== facility.phc) return;
-  onPhcChange();
-
-  if(!facility.hsc) return;
-  const hscSel = document.getElementById('hscSelect');
-  hscSel.value = facility.hsc;
-  if(hscSel.value === facility.hsc) updateEntriesHeading();
+function onPickPhcChange(){
+  const block = document.getElementById('pickBlockSelect').value;
+  const phc = document.getElementById('pickPhcSelect').value;
+  const hscSel = document.getElementById('pickHscSelect');
+  hscSel.innerHTML = '';
+  if(!phc){
+    hscSel.innerHTML = '<option value="">Select PHC first</option>';
+    hscSel.disabled = true;
+    return;
+  }
+  hscSel.disabled = false;
+  hscSel.appendChild(new Option('Select HWC / HSC',''));
+  HIERARCHY[block][phc].slice().sort().forEach(hsc=>{
+    hscSel.appendChild(new Option(hsc, hsc));
+  });
 }
 
 function updateEntriesHeading(){
@@ -1841,8 +1937,37 @@ window.onUserActive = function(){
   if(headerSub) headerSub.style.display = window.isAdmin ? '' : 'none';
   const adminOnlySection = document.getElementById('adminOnlySection');
   if(adminOnlySection) adminOnlySection.style.display = window.isAdmin ? '' : 'none';
-  restoreFacilitySelection();
+  applyAssignedFacilityLock();
+  const myReports = document.getElementById('myHscReportsSection');
+  if(myReports) myReports.style.display = window.isAdmin ? 'none' : '';
+  if(!window.isAdmin) initMyHscReports();
 };
+
+/* ---------- lock Block/PHC/HSC to the worker's assigned facility ---------- */
+function applyAssignedFacilityLock(){
+  const blockSel = document.getElementById('blockSelect');
+  const phcSel = document.getElementById('phcSelect');
+  const hscSel = document.getElementById('hscSelect');
+
+  if(window.isAdmin){
+    blockSel.disabled = false;
+    return;
+  }
+
+  const cu = window.currentUser || {};
+  if(!cu.assignedBlock || !cu.assignedPhc || !cu.assignedHsc) return;
+
+  blockSel.value = cu.assignedBlock;
+  onBlockChange();
+  phcSel.value = cu.assignedPhc;
+  onPhcChange();
+  hscSel.value = cu.assignedHsc;
+  updateEntriesHeading();
+
+  blockSel.disabled = true;
+  phcSel.disabled = true;
+  hscSel.disabled = true;
+}
 
 async function saveEntry(){
   if(!document.getElementById('blockSelect').value ||
@@ -1949,6 +2074,101 @@ function exportExcel(){
   showToast('Exported to CSV');
 }
 
+/* ---------- shared Excel column set (kept in sync with FIELD_IDS/RADIO_GROUPS) ---------- */
+const EXCEL_COLUMNS = ['pDate','block','phc','hsc', ...FIELD_IDS.filter(id=>id!=='pDate'), ...RADIO_GROUPS];
+
+function prettyHeader(id){
+  const overrides = { pDate:'Date', block:'Block', phc:'PHC', hsc:'HWC-HSC Name' };
+  if(overrides[id]) return overrides[id];
+  return id.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/^./, c=>c.toUpperCase());
+}
+
+const EXCEL_HEADERS = ['Sl.No.', ...EXCEL_COLUMNS.map(prettyHeader)];
+
+function excelCellVal(r, key){
+  const v = r[key];
+  if(v === undefined || v === null) return '';
+  const s = String(v).trim();
+  if(s === 'undefined' || s === 'null') return '';
+  return s;
+}
+
+function rowToExcelArray(r, slNo){
+  return [slNo, ...EXCEL_COLUMNS.map(col=> excelCellVal(r, col))];
+}
+
+/* ---------- My HSC Reports (non-admin) ---------- */
+let myReportsCache = [];
+
+function initMyHscReports(){
+  const hsc = (window.currentUser && window.currentUser.assignedHsc) || '';
+  document.getElementById('myHscReportsHeading').textContent = hsc ? `My Reports — ${hsc}` : 'My Reports';
+  const fromEl = document.getElementById('myReportsFrom');
+  const toEl = document.getElementById('myReportsTo');
+  if(!fromEl.value) fromEl.value = toDateStr(new Date());
+  if(!toEl.value) toEl.value = toDateStr(new Date());
+  loadMyHscReport();
+}
+
+async function loadMyHscReport(){
+  const hsc = window.currentUser && window.currentUser.assignedHsc;
+  const container = document.getElementById('myReportsList');
+  if(!hsc){
+    container.innerHTML = '<div class="empty-note">No facility assigned yet.</div>';
+    return;
+  }
+  const from = document.getElementById('myReportsFrom').value;
+  const to = document.getElementById('myReportsTo').value;
+  container.innerHTML = '<div class="empty-note">Loading…</div>';
+  try{
+    const all = await window.fbQueryEntriesByHsc(hsc);
+    myReportsCache = all.filter(e=> e.pDate && (!from || e.pDate >= from) && (!to || e.pDate <= to));
+    renderMyReportsList(myReportsCache);
+  }catch(e){
+    console.error(e);
+    container.innerHTML = '<div class="empty-note">Could not load entries — check your connection.</div>';
+  }
+}
+
+function renderMyReportsList(list){
+  const container = document.getElementById('myReportsList');
+  if(list.length === 0){
+    container.innerHTML = '<div class="empty-note">No entries in this range.</div>';
+    return;
+  }
+  const sorted = list.slice().sort((a,b)=> (b.pDate||'').localeCompare(a.pDate||''));
+  container.innerHTML = sorted.map(e=>`
+    <div class="entry-card">
+      <div>
+        <div class="name">${e.pName || '(no name)'} — ${e.pType || ''}</div>
+        <div class="meta">${e.pDate || ''}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function downloadMyHscExcel(){
+  if(myReportsCache.length === 0){
+    showToast('No entries to export');
+    return;
+  }
+  const aoa = [EXCEL_HEADERS];
+  myReportsCache.slice().sort((a,b)=> (a.pDate||'').localeCompare(b.pDate||'')).forEach((r, i)=>{
+    aoa.push(rowToExcelArray(r, i + 1));
+  });
+  const ws = XLSX.utils.aoa_to_sheet(aoa);
+  for(let c = 0; c < EXCEL_HEADERS.length; c++){
+    const cellRef = XLSX.utils.encode_cell({ r:0, c });
+    if(ws[cellRef]) ws[cellRef].s = { font: { bold: true } };
+  }
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'My Reports');
+  const hsc = (window.currentUser && window.currentUser.assignedHsc) || 'report';
+  const from = document.getElementById('myReportsFrom').value;
+  const to = document.getElementById('myReportsTo').value;
+  XLSX.writeFile(wb, `${hsc}_${from}_to_${to}.xlsx`);
+}
+
 /* ---------- reports (Block-wise / PHC-wise / HSC-wise) ---------- */
 function showReport(type){
   document.getElementById('blockReportBtn').classList.toggle('active-report', type === 'block');
@@ -2027,6 +2247,7 @@ function toDateStr(d){
 
 document.addEventListener('DOMContentLoaded', ()=>{
   populateBlocks();
+  populatePickBlocks();
   initPills();
   const today = new Date();
   const yesterday = new Date();

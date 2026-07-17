@@ -72,6 +72,28 @@
   .stat-num{ font-size:26px; font-weight:700; color:var(--teal-dark); }
   .stat-box.bad .stat-num{ color:var(--red); }
   .stat-label{ font-size:12px; color:var(--muted); margin-top:2px; }
+  .btn-edit-hsc{
+    background:none; border:none; cursor:pointer; font-size:13px; padding:0 0 0 6px; vertical-align:middle;
+  }
+  .modal-overlay{
+    display:none; position:fixed; inset:0; background:rgba(18,49,43,.45);
+    align-items:center; justify-content:center; padding:20px; z-index:50;
+  }
+  .modal-card{
+    background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:22px; max-width:380px; width:100%;
+  }
+  .modal-card h3{ margin:0 0 4px; font-size:16px; color:var(--teal-dark); }
+  .modal-card p.sub{ margin:0 0 14px; color:var(--muted); font-size:13px; }
+  .modal-card label{ display:block; text-align:left; font-size:12px; color:var(--muted); margin:0 0 4px; }
+  .modal-card select{
+    width:100%; padding:10px; margin-bottom:12px; border:1px solid var(--line);
+    border-radius:8px; font-size:14px; font-family:inherit; background:#fff; color:var(--ink);
+  }
+  .modal-actions{ display:flex; gap:8px; justify-content:flex-end; margin-top:4px; }
+  .modal-actions .btn-cancel{ background:#fff; color:var(--muted); border:1px solid var(--line); }
+  .modal-actions .btn-save{ background:var(--teal); color:#fff; }
+  .modal-error{ color:var(--red); font-size:13px; margin:-4px 0 10px; min-height:16px; }
 </style>
 </head>
 <body>
@@ -93,6 +115,34 @@
   const ADMIN_EMAIL = "apmmyld@gmail.com";
 
   const HIERARCHY = {"Kollidam": {"Edamanal": ["Umayalpathy"], "Kollidam": ["Pannangudi"], "Nallur": ["Mahendirapalli"], "Puthupattinam": ["Agaravattaram", "Thanttavangulam"], "Thirumullaivasal": ["Thoduvai"]}, "Kuttalam": {"Kiliyanur": ["Muthur"], "Komal": ["Asikadu"], "Konerirajapuram": ["Kanchivai"], "Manganallur": ["Vazhuvur"], "Mekkirimangalam": ["Pazhaiyakoodalur"]}, "Mayiladuthurai": {"Elanthoppu": ["Pattavarthi", "Sithamalli"], "Kali": ["Kodankudi", "Korukkai", "Mappadugai", "Pattamangalam"], "Manalmedu": ["Kadalangudi (Manalmed Phc)"], "Villiyanallur": ["Anathandavapuram", "Needur", "Uluthukuppai"]}, "Sembanarkovil": {"10.Keezhaiyur": ["Karuvalakkarai", "Kidarankondan", "Natham", "Pagasalai"], "Akkur": ["Akkur (Annappanpettai)", "Chinnangudi", "Erukattancherry", "Kalakasthinathapuram", "Killiyur", "Kumarakudi", "Mukkarumbur", "Poraiyar North", "Poraiyar South"], "Melaperumpallam": ["Keezhaperumpallam", "Thalachangadu"], "Sanganranpanthal": ["Eaduthukkattisathanu", "Eluppur", "Kattucherry", "Nalladai", "Neduvasal", "Thiruvilaiyattam"], "Sembanarkovil": ["Arupathi", "Elaiyalur", "Maymathur"], "Thirukadaiyur": ["Anaikoil", "Chandrapadi", "Kazhiyappanallur", "Kuttiyandiyur", "Manikkanpangu", "Pillaiperumanallur", "Sathangudi", "Thillaiyadi"]}, "Sirkali": {"Kathiruppu": ["Rathanallur"], "Thiruvengadu": ["Thiruvali"], "Valluvakudi": ["Nimmeli", "Thiruppungur"]}};
+
+  // Kept in sync with FIELD_IDS/RADIO_GROUPS in index.html (drives the Excel export columns below).
+  const FIELD_IDS = [
+    'pDate','uniqueId','pName','patientAge','pGender','pPhone','pType',
+    'cphcService','consultType',
+    'feverComplaint','feverTreatment','diarrheaComplaint','diarrheaTreatment',
+    'vomitingComplaint','vomitingTreatment','abdominalComplaint','abdominalTreatment',
+    'painComplaint','painTreatment','chestPainComplaint','chestPainTreatment',
+    'eyeComplaint','eyeTreatment','entComplaint','entTreatment','mentalIllness',
+    'dogCategory','arvGiven','injuryType',
+    'ncdScreeningType','ncdFollowupDetail',
+    'oralScreening','oralResult','breastScreening','breastResult','cervicalResult',
+    'tbScreening','tbTreatmentDate','tbContactScreening','tbContactTreatmentDate',
+    'leprosyScreening','leprosyTreatmentDate','leprosyContactScreening','leprosyContactTreatmentDate',
+    'bp','temp','spo2',
+    'iodineTests','waterTests','sputumAfb','peripheralSmear','smearFilaria','investigationOthers',
+    'upt','hbValue','anemia','bloodSugar','urineAlbumin','urineSugar','hiv','hbsag','vdrl',
+    'calciumGiven','ifaGiven',
+    'htDrugs','dmDrugs','cardiacDrugs','antibioticDrugs','otherEdlDrugs','familyWelfare'
+  ];
+  const RADIO_GROUPS = [
+    'aamPortal','picme','mtm','hmis','ihip','injTd',
+    'emergencyReferred',
+    'cardiacManaged','mentalReferred','arvCategory3Referred',
+    'cervicalScreening','cervicalReferred','tbContactDone','leprosyContactDone',
+    'wifsJunior','wifsSenior','ironSyrupGivenNew','kitCotrimoxazole',
+    'kitParacetamol','kitAlbendazole','kitDicyclomine','kitOrs'
+  ];
 
   function getAllHSCs(){
     const list = [];
@@ -128,12 +178,15 @@
 
   document.getElementById('signOutBtn').addEventListener('click', ()=> signOut(auth));
 
+  const usersByUid = {};
+
   function listenUsers(){
     onSnapshot(collection(db, 'users'), (snap)=>{
       const pending = [];
       const active = [];
       snap.forEach(d=>{
         const data = { uid: d.id, ...d.data() };
+        usersByUid[data.uid] = data;
         if(data.email === ADMIN_EMAIL) return; // don't list admin itself
         if(data.status === 'active') active.push(data);
         else pending.push(data);
@@ -167,11 +220,12 @@
     const el = document.getElementById('activeList');
     document.getElementById('activeCount').textContent = list.length;
     if(list.length === 0){ el.innerHTML = '<div class="empty-note">No approved users yet.</div>'; return; }
-    let html = '<table><thead><tr><th>Email</th><th>Role</th><th></th></tr></thead><tbody>';
+    let html = '<table><thead><tr><th>Email</th><th>Role</th><th>Assigned HSC</th><th></th></tr></thead><tbody>';
     list.forEach(u=>{
-      html += `<tr><td>${u.email}</td><td><span class="role-pill">${u.role || 'user'}</span></td><td>
-        <button class="btn btn-revoke" data-uid="${u.uid}" data-action="revoke">Revoke</button>
-      </td></tr>`;
+      html += `<tr><td>${u.email}</td><td><span class="role-pill">${u.role || 'user'}</span></td>
+        <td>${u.assignedHsc || '—'} <button class="btn-edit-hsc" data-uid="${u.uid}" data-action="editHsc" title="Edit assigned HSC">✏️</button></td>
+        <td><button class="btn btn-revoke" data-uid="${u.uid}" data-action="revoke">Revoke</button></td>
+      </tr>`;
     });
     html += '</tbody></table>';
     el.innerHTML = html;
@@ -182,6 +236,7 @@
     if(!btn) return;
     const uid = btn.dataset.uid;
     const action = btn.dataset.action;
+    if(action === 'editHsc'){ openEditHscModal(uid); return; }
     btn.disabled = true;
     try{
       if(action === 'approve') await setDoc(doc(db,'users',uid), { status:'active' }, { merge:true });
@@ -189,6 +244,99 @@
       if(action === 'revoke') await setDoc(doc(db,'users',uid), { status:'pending' }, { merge:true });
     }catch(err){
       alert('Action failed: ' + err.message);
+      btn.disabled = false;
+    }
+  });
+
+  /* ---------- Edit assigned HSC modal ---------- */
+  function populateEditHscBlocks(){
+    const sel = document.getElementById('editHscBlockSelect');
+    Object.keys(HIERARCHY).sort().forEach(block=> sel.appendChild(new Option(block, block)));
+  }
+
+  window.onEditHscBlockChange = function(){
+    const block = document.getElementById('editHscBlockSelect').value;
+    const phcSel = document.getElementById('editHscPhcSelect');
+    const hscSel = document.getElementById('editHscHscSelect');
+    phcSel.innerHTML = '';
+    hscSel.innerHTML = '<option value="">Select PHC first</option>';
+    hscSel.disabled = true;
+    if(!block){
+      phcSel.innerHTML = '<option value="">Select Block first</option>';
+      phcSel.disabled = true;
+      return;
+    }
+    phcSel.disabled = false;
+    phcSel.appendChild(new Option('Select PHC',''));
+    Object.keys(HIERARCHY[block]).sort().forEach(phc=> phcSel.appendChild(new Option(phc, phc)));
+  };
+
+  window.onEditHscPhcChange = function(){
+    const block = document.getElementById('editHscBlockSelect').value;
+    const phc = document.getElementById('editHscPhcSelect').value;
+    const hscSel = document.getElementById('editHscHscSelect');
+    hscSel.innerHTML = '';
+    if(!phc){
+      hscSel.innerHTML = '<option value="">Select PHC first</option>';
+      hscSel.disabled = true;
+      return;
+    }
+    hscSel.disabled = false;
+    hscSel.appendChild(new Option('Select HWC / HSC',''));
+    HIERARCHY[block][phc].slice().sort().forEach(hsc=> hscSel.appendChild(new Option(hsc, hsc)));
+  };
+
+  populateEditHscBlocks();
+
+  function openEditHscModal(uid){
+    const u = usersByUid[uid];
+    if(!u) return;
+    document.getElementById('editHscUid').value = uid;
+    document.getElementById('editHscEmail').textContent = u.email;
+    document.getElementById('editHscError').textContent = '';
+
+    const blockSel = document.getElementById('editHscBlockSelect');
+    const phcSel = document.getElementById('editHscPhcSelect');
+    const hscSel = document.getElementById('editHscHscSelect');
+
+    blockSel.value = u.assignedBlock || '';
+    window.onEditHscBlockChange();
+    if(u.assignedPhc){
+      phcSel.value = u.assignedPhc;
+      window.onEditHscPhcChange();
+      if(u.assignedHsc) hscSel.value = u.assignedHsc;
+    }
+
+    document.getElementById('editHscModal').style.display = 'flex';
+  }
+
+  function closeEditHscModal(){
+    document.getElementById('editHscModal').style.display = 'none';
+  }
+
+  document.getElementById('editHscCancelBtn').addEventListener('click', closeEditHscModal);
+
+  document.getElementById('editHscSaveBtn').addEventListener('click', async ()=>{
+    const uid = document.getElementById('editHscUid').value;
+    const block = document.getElementById('editHscBlockSelect').value;
+    const phc = document.getElementById('editHscPhcSelect').value;
+    const hsc = document.getElementById('editHscHscSelect').value;
+    const err = document.getElementById('editHscError');
+    if(!block || !phc || !hsc){
+      err.textContent = 'Select Block, PHC and HSC';
+      return;
+    }
+    err.textContent = '';
+    const btn = document.getElementById('editHscSaveBtn');
+    btn.disabled = true;
+    try{
+      await setDoc(doc(db,'users',uid),
+        { assignedBlock: block, assignedPhc: phc, assignedHsc: hsc }, { merge: true });
+      closeEditHscModal();
+      alert('Assigned HSC updated.');
+    }catch(e){
+      err.textContent = 'Update failed: ' + e.message;
+    }finally{
       btn.disabled = false;
     }
   });
@@ -280,24 +428,16 @@
     URL.revokeObjectURL(url);
   }
 
-  /* ---------- Excel report (official district format) ---------- */
-  const EXCEL_HEADERS = [
-    'Sl.No.','Date','Block','PHC','HWC-HSC Name','Patient Name','Phone Number','Gender',
-    'Type of Patient','Type of Consultation','AAM Portal','PICME','MTM','HMIS','Fever',
-    'Mental health Illness Cases Followup','EYE','Ear/Nose/Throat','Other Diagnosis',
-    'Dog bite case attended',
-    'ARV given','Injury/Emergency','Emergency cases provided with Inj.Td',
-    'Cardiac Cases managed with loading dose and referred',
-    'Emergency cases referred to Higher Facility','NCD Screening','NCD Follow up',
-    'Cancer Screening','Screening Positive/Negative','Entered in MTM Portal','Blood Pressure',
-    'Temperature','SpO2 saturation','Urine Pregnancy Test','Hemoglobin value','Anemia',
-    'Blood Sugar value','Urine Albumin','Urine Sugar','HIV test','HbsAg','VDRL',
-    'Iodine salt test','Water testing','Sputum for AFB','Peripheral smear for Malaria',
-    'Others (investigation)','Calcium Carbonate','IFA Large','Junior WIFS','Iron syrup',
-    'Vitamin A Syrup','Others (kit)','Metformin','Amlodipine','Glimepiride','Glibenclamide',
-    'Sitagliptin','Norfloxacin','Doxycycline','Co-trimoxazole','Amoxicillin','Ciprofloxacin',
-    'Other drugs','Family Welfare drugs'
-  ];
+  /* ---------- Excel report (dynamic — kept in sync with FIELD_IDS/RADIO_GROUPS) ---------- */
+  const EXCEL_COLUMNS = ['pDate','block','phc','hsc', ...FIELD_IDS.filter(id=>id!=='pDate'), ...RADIO_GROUPS];
+
+  function prettyHeader(id){
+    const overrides = { pDate:'Date', block:'Block', phc:'PHC', hsc:'HWC-HSC Name' };
+    if(overrides[id]) return overrides[id];
+    return id.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/^./, c=>c.toUpperCase());
+  }
+
+  const EXCEL_HEADERS = ['Sl.No.', ...EXCEL_COLUMNS.map(prettyHeader)];
 
   function excelVal(r, key){
     const v = r[key];
@@ -307,42 +447,8 @@
     return s;
   }
 
-  function combineQtyGiven(r, qtyKey, givenKey){
-    const qty = excelVal(r, qtyKey);
-    if(!qty) return '';
-    return `${qty} (${excelVal(r, givenKey)})`;
-  }
-
-  function combineNameQty(r, nameKey, qtyKey){
-    const name = excelVal(r, nameKey);
-    if(!name) return '';
-    return `${name}: ${excelVal(r, qtyKey)}`;
-  }
-
   function rowToExcelArray(r, slNo){
-    return [
-      slNo,
-      excelVal(r,'pDate'), excelVal(r,'block'), excelVal(r,'phc'), excelVal(r,'hsc'),
-      excelVal(r,'pName'), excelVal(r,'pPhone'), excelVal(r,'pGender'), excelVal(r,'pType'),
-      excelVal(r,'consultType'), excelVal(r,'aamPortal'), excelVal(r,'picme'), excelVal(r,'mtm'),
-      excelVal(r,'hmis'), excelVal(r,'fever'), excelVal(r,'mentalHealthFollowup'), excelVal(r,'eye'),
-      excelVal(r,'ent'), excelVal(r,'symptomOther'), excelVal(r,'dogCategory'), excelVal(r,'arvGiven'), excelVal(r,'injuryType'),
-      excelVal(r,'injTd'), excelVal(r,'cardiacCase'), excelVal(r,'emergencyReferred'),
-      excelVal(r,'ncdScreening'), excelVal(r,'ncdFollowup'), excelVal(r,'cancerMethod'),
-      excelVal(r,'cancerResult'), excelVal(r,'cancerMtmPortal'), excelVal(r,'bp'), excelVal(r,'temp'),
-      excelVal(r,'spo2'), excelVal(r,'upt'), excelVal(r,'hbValue'), excelVal(r,'anemia'),
-      excelVal(r,'bloodSugar'), excelVal(r,'urineAlbumin'), excelVal(r,'urineSugar'), excelVal(r,'hiv'),
-      excelVal(r,'hbsag'), excelVal(r,'vdrl'), excelVal(r,'iodineTests'), excelVal(r,'waterTests'),
-      excelVal(r,'sputumAfb'), excelVal(r,'peripheralSmear'), excelVal(r,'investigationOthers'),
-      combineQtyGiven(r,'calciumQty','calciumGivenTo'), combineQtyGiven(r,'ifaQty','ifaGivenTo'),
-      combineQtyGiven(r,'wifsQty','wifsGiven'), combineQtyGiven(r,'ironSyrupQty','ironSyrupGiven'),
-      combineQtyGiven(r,'vitAQty','vitAGiven'), combineNameQty(r,'kitOtherName','kitOtherQty'),
-      excelVal(r,'ncdMetformin'), excelVal(r,'ncdAmlodipine'), excelVal(r,'ncdGlimepiride'),
-      excelVal(r,'ncdGlibenclamide'), excelVal(r,'ncdSitagliptin'), excelVal(r,'edlNorfloxacin'),
-      excelVal(r,'edlDoxycycline'), excelVal(r,'edlCotrimoxazole'), excelVal(r,'edlAmoxicillin'),
-      excelVal(r,'edlCiprofloxacin'), combineNameQty(r,'edlOtherName','edlOtherQty'),
-      excelVal(r,'familyWelfare')
-    ];
+    return [slNo, ...EXCEL_COLUMNS.map(col=> excelVal(r, col))];
   }
 
   function blankHscRow(h, slNo){
@@ -460,6 +566,31 @@
   </div>
 
 </main>
+
+<div class="modal-overlay" id="editHscModal">
+  <div class="modal-card">
+    <h3>Edit Assigned HSC</h3>
+    <p class="sub" id="editHscEmail"></p>
+    <input type="hidden" id="editHscUid">
+    <label for="editHscBlockSelect">Block</label>
+    <select id="editHscBlockSelect" onchange="onEditHscBlockChange()">
+      <option value="">Select Block</option>
+    </select>
+    <label for="editHscPhcSelect">PHC</label>
+    <select id="editHscPhcSelect" onchange="onEditHscPhcChange()" disabled>
+      <option value="">Select Block first</option>
+    </select>
+    <label for="editHscHscSelect">HWC / HSC</label>
+    <select id="editHscHscSelect" disabled>
+      <option value="">Select PHC first</option>
+    </select>
+    <div class="modal-error" id="editHscError"></div>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" id="editHscCancelBtn">Cancel</button>
+      <button class="btn btn-save" id="editHscSaveBtn">Save</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
