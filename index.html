@@ -114,6 +114,7 @@
     letter-spacing:.2px;
   }
   .field label .req{ color:var(--red); margin-left:2px; }
+  .req{ color:var(--red); margin-left:2px; }
   .field label .opt{ color:var(--muted); font-weight:500; }
 
   input[type=text], input[type=tel], input[type=number], input[type=date], select, textarea{
@@ -652,7 +653,7 @@
         <input type="text" id="uniqueId" placeholder="Unique ID">
       </div>
       <div class="field">
-        <label for="pName">Patient Name</label>
+        <label for="pName">Patient Name <span class="req">*</span></label>
         <input type="text" id="pName" placeholder="Patient name">
       </div>
       <div class="field">
@@ -668,15 +669,15 @@
         </select>
       </div>
       <div class="field">
-        <label for="pPhone">Phone Number</label>
+        <label for="pPhone">Phone Number <span class="req">*</span></label>
         <input type="tel" id="pPhone" placeholder="10-digit number">
       </div>
       <div class="field">
-        <label for="height">Height (cm)</label>
+        <label for="height">Height (cm) <span class="req">*</span></label>
         <input type="number" id="height" placeholder="cm">
       </div>
       <div class="field">
-        <label for="weight">Weight (kg)</label>
+        <label for="weight">Weight (kg) <span class="req">*</span></label>
         <input type="number" id="weight" placeholder="kg">
       </div>
       <div class="field full">
@@ -708,7 +709,7 @@
     </div>
     <div class="step-body">
       <div class="field full">
-        <label for="cphcService">Type of CPHC service</label>
+        <label for="cphcService">Type of CPHC service <span class="req">*</span></label>
         <select id="cphcService">
           <option value="">— Select —</option>
           <option>Pregnancy (ANC)</option>
@@ -730,7 +731,7 @@
         </select>
       </div>
       <div class="field full">
-        <label for="consultType">Type of Consultation</label>
+        <label for="consultType">Type of Consultation <span class="req">*</span></label>
         <select id="consultType">
           <option value="">Select</option>
           <option>MLHP</option>
@@ -752,7 +753,7 @@
     </div>
     <div class="step-body">
       <div class="field">
-        <label>Blood Pressure</label>
+        <label>Blood Pressure <span class="req">*</span></label>
         <input type="text" id="bp" placeholder="e.g. 120/80">
       </div>
       <div class="field">
@@ -760,7 +761,7 @@
         <input type="number" step="0.1" id="temp">
       </div>
       <div class="field">
-        <label for="pulseRate">Pulse Rate</label>
+        <label for="pulseRate">Pulse Rate <span class="req">*</span></label>
         <input type="number" id="pulseRate">
       </div>
       <div class="field">
@@ -1572,8 +1573,8 @@
     <div class="step-head" onclick="toggleStep(this)">
       <div class="step-num">12</div>
       <div class="titles">
-        <h2>Portal Entry</h2>
-        <p>Performance details</p>
+        <h2>Portal Entry <span class="req">*</span></h2>
+        <p>Performance details — at least one is required</p>
       </div>
       <div class="chev">▾</div>
     </div>
@@ -1986,6 +1987,18 @@ function applyAssignedFacilityLock(){
   hscSel.disabled = true;
 }
 
+const REQUIRED_FIELDS = [
+  { id:'pName', label:'Patient Name' },
+  { id:'pPhone', label:'Phone Number' },
+  { id:'height', label:'Height' },
+  { id:'weight', label:'Weight' },
+  { id:'cphcService', label:'Type of CPHC service' },
+  { id:'consultType', label:'Type of Consultation' },
+  { id:'bp', label:'Blood Pressure' },
+  { id:'pulseRate', label:'Pulse Rate' }
+];
+const PORTAL_ENTRY_FIELDS = ['aamPortal','picme','mtm','hmis','ihip'];
+
 async function saveEntry(){
   if(!document.getElementById('blockSelect').value ||
      !document.getElementById('phcSelect').value ||
@@ -1996,6 +2009,17 @@ async function saveEntry(){
   const dateInput = document.getElementById('pDate');
   if(!dateInput.value || dateInput.value < dateInput.min || dateInput.value > dateInput.max){
     showToast('You can only submit entries for today or yesterday.');
+    return;
+  }
+  for(const f of REQUIRED_FIELDS){
+    const el = document.getElementById(f.id);
+    if(!el || !el.value){
+      showToast(`${f.label} is required`);
+      return;
+    }
+  }
+  if(!PORTAL_ENTRY_FIELDS.some(name=> getRadioValue(name))){
+    showToast('Fill at least one field in Portal Entry');
     return;
   }
   const entry = collectFormData();
