@@ -1650,8 +1650,6 @@
 <div id="adminOnlySection">
 
 <div class="entries">
-  <h3 id="entriesHeading">Today's Entries — select a facility</h3>
-  <div id="entryList"></div>
   <div class="actions" style="padding:0; margin-top:6px;">
     <button class="btn-amber" onclick="exportExcel()">⬇ Export to Excel</button>
     <button class="btn-danger" onclick="clearAll()">🗑 Clear all entries</button>
@@ -1660,6 +1658,10 @@
 
 <div class="entries" id="reportsPanel">
   <h3>Reports</h3>
+  <div class="mini-controls">
+    <div class="field"><label for="reportFrom">From</label><input type="date" id="reportFrom" onchange="refreshActiveReport()"></div>
+    <div class="field"><label for="reportTo">To</label><input type="date" id="reportTo" onchange="refreshActiveReport()"></div>
+  </div>
   <div class="actions" style="padding:0; margin-bottom:10px;">
     <button class="btn-ghost" id="blockReportBtn" onclick="showReport('block')">📊 Block-wise Report</button>
     <button class="btn-ghost" id="phcReportBtn" onclick="showReport('phc')">📊 PHC-wise Report</button>
@@ -1739,7 +1741,7 @@ function onPhcChange(){
   HIERARCHY[block][phc].slice().sort().forEach(hsc=>{
     hscSel.appendChild(new Option(hsc, hsc));
   });
-  hscSel.onchange = updateEntriesHeading;
+  hscSel.onchange = updateHscDashboard;
 }
 
 /* ---------- one-time HSC picker (gate screen) cascade ---------- */
@@ -1785,14 +1787,6 @@ function onPickPhcChange(){
   HIERARCHY[block][phc].slice().sort().forEach(hsc=>{
     hscSel.appendChild(new Option(hsc, hsc));
   });
-}
-
-function updateEntriesHeading(){
-  const hsc = document.getElementById('hscSelect').value;
-  const phc = document.getElementById('phcSelect').value;
-  const heading = document.getElementById('entriesHeading');
-  heading.textContent = hsc ? `Today's Entries — ${hsc} (${phc})` : "Today's Entries — select a facility";
-  updateHscDashboard();
 }
 
 /* ---------- HSC performance dashboard (avg. per day, last 7 days) ---------- */
@@ -2014,7 +2008,7 @@ function applyAssignedFacilityLock(){
   phcSel.value = cu.assignedPhc;
   onPhcChange();
   hscSel.value = cu.assignedHsc;
-  updateEntriesHeading();
+  updateHscDashboard();
 
   blockSel.disabled = true;
   phcSel.disabled = true;
@@ -2079,13 +2073,6 @@ async function clearAll(){
   showToast('All entries cleared');
 }
 
-async function deleteEntry(idx){
-  const list = loadEntries();
-  const entry = list[idx];
-  if(!entry) return;
-  await window.fbDeleteEntry(entry._id);
-}
-
 function refreshActiveReport(){
   if(document.getElementById('blockReportBtn').classList.contains('active-report')) showReport('block');
   else if(document.getElementById('phcReportBtn').classList.contains('active-report')) showReport('phc');
@@ -2093,28 +2080,7 @@ function refreshActiveReport(){
 }
 
 function renderEntries(){
-  const list = loadEntries();
-  document.getElementById('entryCount').textContent = list.length;
-  const container = document.getElementById('entryList');
-  container.innerHTML = '';
-  if(list.length === 0){
-    container.innerHTML = '<div class="empty-note">No entries saved yet.</div>';
-    return;
-  }
-  list.slice().reverse().forEach((entry, revIdx)=>{
-    const idx = list.length - 1 - revIdx;
-    const div = document.createElement('div');
-    div.className = 'entry-card';
-    const d = new Date(entry.savedAt);
-    div.innerHTML = `
-      <div>
-        <div class="name">${entry.pName || '(no name)'} — ${entry.pType || ''}</div>
-        <div class="meta">${entry.hsc || ''} · ${entry.phc || ''} · ${entry.block || ''} · ${entry.pDate || d.toLocaleDateString()}</div>
-      </div>
-      <button onclick="deleteEntry(${idx})">Delete</button>
-    `;
-    container.appendChild(div);
-  });
+  document.getElementById('entryCount').textContent = loadEntries().length;
 }
 
 /* ---------- CSV export (opens in Excel) ---------- */
@@ -2229,11 +2195,13 @@ function showReport(type){
   document.getElementById('phcReportBtn').classList.toggle('active-report', type === 'phc');
   document.getElementById('hscReportBtn').classList.toggle('active-report', type === 'hsc');
 
-  const list = loadEntries();
+  const from = document.getElementById('reportFrom').value;
+  const to = document.getElementById('reportTo').value;
+  const list = loadEntries().filter(e=> (!from || e.pDate >= from) && (!to || e.pDate <= to));
   const out = document.getElementById('reportOutput');
 
   if(list.length === 0){
-    out.innerHTML = '<div class="empty-note">No entries saved yet — nothing to report.</div>';
+    out.innerHTML = '<div class="empty-note">No entries in this date range — nothing to report.</div>';
     return;
   }
 
