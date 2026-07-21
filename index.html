@@ -665,7 +665,7 @@
         <input type="date" id="pDate">
       </div>
       <div class="field">
-        <label for="uniqueId">Unique ID</label>
+        <label for="uniqueId">Unique ID <span class="req">*</span></label>
         <input type="text" id="uniqueId" placeholder="Unique ID">
       </div>
       <div class="field">
@@ -2016,6 +2016,7 @@ function applyAssignedFacilityLock(){
 }
 
 const REQUIRED_FIELDS = [
+  { id:'uniqueId', label:'Unique ID' },
   { id:'pName', label:'Patient Name' },
   { id:'height', label:'Height' },
   { id:'weight', label:'Weight' },
