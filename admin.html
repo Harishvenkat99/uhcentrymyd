@@ -348,11 +348,16 @@
     const total = rows.length;
     const male = rows.filter(r=> r.pGender === 'Male').length;
     const female = rows.filter(r=> r.pGender === 'Female').length;
+    const esanjeevani = rows.filter(r=> r.consultType === 'eSanjeevani').length;
+    const cancerScreening = rows.reduce((sum, r)=>
+      sum + (r.oralScreening ? 1 : 0) + (r.breastScreening ? 1 : 0) + (r.cervicalScreening === 'Yes' ? 1 : 0), 0);
 
     let html = `<div class="dash-stats">
       <div class="stat-box"><div class="stat-num">${total}</div><div class="stat-label">Total OP Entries</div></div>
       <div class="stat-box"><div class="stat-num">${male}</div><div class="stat-label">Male</div></div>
       <div class="stat-box"><div class="stat-num">${female}</div><div class="stat-label">Female</div></div>
+      <div class="stat-box"><div class="stat-num">${esanjeevani}</div><div class="stat-label">eSanjeevani Selected</div></div>
+      <div class="stat-box"><div class="stat-num">${cancerScreening}</div><div class="stat-label">Cancer Screening Done</div></div>
     </div>`;
 
     // Submission status only makes sense for a single-day check
@@ -370,7 +375,7 @@
       <button class="btn" id="downloadMissingBtn" style="background:var(--amber); color:#fff; margin-top:10px;">⬇ Download Missing HSC List</button>
       <button class="btn" id="downloadExcelBtn" style="background:var(--teal); color:#fff; margin-top:10px; margin-left:8px;">⬇ Download Excel Report</button>
       <table style="margin-top:14px;"><thead><tr><th>HSC</th><th>PHC</th><th>Block</th><th>Status</th></tr></thead><tbody>`;
-      ALL_HSCS.forEach(h=>{
+      [...missing, ...submitted].forEach(h=>{
         const ok = submittedHSCs.has(h.hsc);
         html += `<tr><td>${h.hsc}</td><td>${h.phc}</td><td>${h.block}</td><td>${ok ? '✅ Submitted' : '❌ Missing'}</td></tr>`;
       });
