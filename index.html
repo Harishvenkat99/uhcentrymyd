@@ -803,239 +803,397 @@
       <div class="step-num">4</div>
       <div class="titles">
         <h2>Patient Complaints</h2>
-        <p>Fever, diarrhea, vomiting, pain, eye/ENT, mental health</p>
+        <p>Fever, cough, pain, eye/ENT, mental health, geriatric, palliative</p>
       </div>
       <div class="chev">▾</div>
     </div>
     <div class="step-body">
       <div class="subhead">Fever</div>
-      <div class="field">
-        <label for="feverComplaint">Complaints</label>
-        <select id="feverComplaint">
-          <option value="">— Select —</option>
-          <option>Fever Cold &amp; Cough</option>
-          <option>Fever with Cold &amp; Cough</option>
-          <option>Fever with Headache</option>
-          <option>Fever with Rash</option>
-          <option>Fever with Joint pain</option>
-          <option>Fever with Jaundice</option>
-          <option>Fever with Rigor</option>
-          <option>Fever with Altered Sensorium or FITS</option>
-          <option>Fever with Diarrhea</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="feverTreatment">Treatment</label>
-        <select id="feverTreatment">
-          <option value="">— Select —</option>
-          <option>Tab.Cetrizine</option>
-          <option>Tab.CPM</option>
-          <option>Tab.Paracetamol</option>
-          <option>Cap.Amoxicillin</option>
-          <option>Syp.Paracetamol</option>
-          <option>Syp.CPM</option>
-        </select>
-      </div>
+        <div class="field">
+          <label for="feverComplaint">Complaints</label>
+          <select id="feverComplaint">
+            <option value="">— Select —</option>
+            <option>Fever</option>
+            <option>Fever with Rash</option>
+            <option>Fever with Rigor - Malaria</option>
+            <option>Fever with Altered Sensorium or FITS</option>
+            <option>Severe myalgia and Joint pain</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="feverTreatment">Treatment</label>
+          <select id="feverTreatment">
+            <option value="">— Select —</option>
+            <option>Syp / T.Paracetamol</option>
+            <option>Syp / Tab.CPM / Levocetirizine</option>
+            <option>T.Ciprofloxcin</option>
+            <option>C.Amoxycillin</option>
+            <option>Co-trimoxazole</option>
+            <option>Nasal Decongestant drops</option>
+            <option>Referral for Malaria / Dengue / Measles / Others</option>
+          </select>
+        </div>
 
-      <div class="subhead">Diarrhea</div>
-      <div class="field">
-        <label for="diarrheaComplaint">Complaints</label>
-        <select id="diarrheaComplaint">
-          <option value="">— Select —</option>
-          <option>Loose Stools</option>
-          <option>Watery Stools</option>
-          <option>Blood in Stool</option>
-          <option>Sticky Stool</option>
-          <option>With Abdominal Cramps</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="diarrheaTreatment">Treatment</label>
-        <select id="diarrheaTreatment">
-          <option value="">— Select —</option>
-          <option>ORS</option>
-          <option>T.Mertonidazole</option>
-          <option>T.Co-Trimoxazole</option>
-          <option>T.Zinc</option>
-          <option>T.Albendazole</option>
-          <option>T.Ranitidine</option>
-        </select>
-      </div>
+      <div class="subhead">Cough &amp; Cold</div>
+        <div class="field">
+          <label for="coughColdComplaint">Complaints</label>
+          <select id="coughColdComplaint">
+            <option value="">— Select —</option>
+            <option>Dry Cough</option>
+            <option>Cough with sputum</option>
+            <option>Cough with Headache - Frontal / Maxilla / Occipetal</option>
+            <option>Rhinitis - Running Nose</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="coughColdTreatment">Treatment</label>
+          <select id="coughColdTreatment">
+            <option value="">— Select —</option>
+            <option>Syp / T.Paracetamol</option>
+            <option>Syp / Tab.CPM / Cetrizine</option>
+            <option>T.Ciprofloxcin</option>
+            <option>C.Amoxycillin</option>
+            <option>Nasal Decongestant drops</option>
+            <option>Co-trimoxazole</option>
+            <option>Referral for Malaria / Dengue / Measles / Others</option>
+            <option>T.Dextromethorphan</option>
+          </select>
+        </div>
+
+      <div class="subhead">Wheezing</div>
+        <div class="field">
+          <label for="wheezingComplaint">Complaints</label>
+          <select id="wheezingComplaint">
+            <option value="">— Select —</option>
+            <option>Wheeze</option>
+            <option>Increased Respiratory rate</option>
+            <option>Chest indrawing</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="wheezingTreatment">Treatment</label>
+          <select id="wheezingTreatment">
+            <option value="">— Select —</option>
+            <option>Inj/ T.deriphylline</option>
+            <option>T.Salbutamol</option>
+            <option>Salbutamol Nebulization</option>
+            <option>T.Dexamethazone</option>
+            <option>Budesonide</option>
+          </select>
+        </div>
+
+      <div class="subhead">Headache</div>
+        <div class="field">
+          <label for="headacheComplaint">Complaints</label>
+          <select id="headacheComplaint">
+            <option value="">— Select —</option>
+            <option>Headache</option>
+            <option>Asso.with Sinusitis</option>
+            <option>Asso.with Allergic Rhinitis</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="headacheTreatment">Treatment</label>
+          <select id="headacheTreatment">
+            <option value="">— Select —</option>
+            <option>CPM or Cetirizine</option>
+            <option>Paracetamol</option>
+            <option>Ciprofloxacin</option>
+            <option>Amoxicillin</option>
+            <option>Co-trimoxazole</option>
+            <option>Erythromicin</option>
+          </select>
+        </div>
+
+      <div class="subhead">Skin lesions</div>
+        <div class="field">
+          <label for="skinLesionsComplaint">Complaints</label>
+          <select id="skinLesionsComplaint">
+            <option value="">— Select —</option>
+            <option>Ringworm - Fungal</option>
+            <option>Athlete&#x27;s Foot - (Tinea Pedis)</option>
+            <option>Jock Itch (Tinea Cruris)</option>
+            <option>Scabies</option>
+            <option>Impetigo</option>
+            <option>Utricaria</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="skinLesionsTreatment">Treatment</label>
+          <select id="skinLesionsTreatment">
+            <option value="">— Select —</option>
+            <option>Permethrin</option>
+            <option>Povidoine Iodine</option>
+            <option>Fluconazole</option>
+            <option>Erythromicin</option>
+            <option>Clotrimazole</option>
+            <option>Calamine lotion</option>
+            <option>Mupirrocin cream</option>
+            <option>Vitamin C</option>
+            <option>Gentian Violet</option>
+          </select>
+        </div>
+
+      <div class="subhead">Diarrhea / Dysentry</div>
+        <div class="field">
+          <label for="diarrheaComplaint">Complaints</label>
+          <select id="diarrheaComplaint">
+            <option value="">— Select —</option>
+            <option>Semi solid - Amoebiasis</option>
+            <option>Blood / Loose Stools - Bacterial</option>
+            <option>Watery Stools - Cholera</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="diarrheaTreatment">Treatment</label>
+          <select id="diarrheaTreatment">
+            <option value="">— Select —</option>
+            <option>ORS</option>
+            <option>T.Mertonidazole</option>
+            <option>T.Co-Trimoxazole</option>
+            <option>T.Zinc</option>
+            <option>T.Albendazole</option>
+            <option>T.Ranitidine</option>
+            <option>C.Doxy</option>
+            <option>T.Ciprofloxacin</option>
+            <option>Inj.RL</option>
+          </select>
+        </div>
 
       <div class="subhead">Vomiting</div>
-      <div class="field">
-        <label for="vomitingComplaint">Complaints</label>
-        <select id="vomitingComplaint">
-          <option value="">— Select —</option>
-          <option>Blood in Vomitus</option>
-          <option>Yellow / Green Vomit</option>
-          <option>Vomiting with Fever</option>
-          <option>Vomiting with Diarrhea</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="vomitingTreatment">Treatment</label>
-        <select id="vomitingTreatment">
-          <option value="">— Select —</option>
-          <option>ORS</option>
-          <option>T.Metoclopramide</option>
-          <option>T.Ranitidine</option>
-        </select>
-      </div>
+        <div class="field">
+          <label for="vomitingComplaint">Complaints</label>
+          <select id="vomitingComplaint">
+            <option value="">— Select —</option>
+            <option>Vomiting</option>
+            <option>Blood in Vomitus</option>
+            <option>Yellow / Green Vomit</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="vomitingTreatment">Treatment</label>
+          <select id="vomitingTreatment">
+            <option value="">— Select —</option>
+            <option>ORS</option>
+            <option>T.Ranitidine</option>
+            <option>T.Antacid</option>
+            <option>T.Domperidone</option>
+            <option>C.Doxy</option>
+            <option>T.Ciprofloxacin</option>
+            <option>Ondansetron</option>
+            <option>Pantoprazole</option>
+          </select>
+        </div>
 
       <div class="subhead">Abdominal Pain</div>
-      <div class="field">
-        <label for="abdominalComplaint">Complaints</label>
-        <select id="abdominalComplaint">
-          <option value="">— Select —</option>
-          <option>Cramps</option>
-          <option>Lower abdominal pain with burning urination</option>
-          <option>Pain in left upper quadrant</option>
-          <option>Pain in left lower quadrant</option>
-          <option>Pain in right upper quadrant</option>
-          <option>Pain in right lower quadrant</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="abdominalTreatment">Treatment</label>
-        <select id="abdominalTreatment">
-          <option value="">— Select —</option>
-          <option>T.Antacid</option>
-          <option>T.Ranitidine</option>
-          <option>T.Domperidone</option>
-          <option>T.Paracitamol</option>
-          <option>T.Albendazole</option>
-        </select>
-      </div>
+        <div class="field">
+          <label for="abdominalComplaint">Complaints</label>
+          <select id="abdominalComplaint">
+            <option value="">— Select —</option>
+            <option>Cramps</option>
+            <option>Colitis - Pain in lower left quadrant</option>
+            <option>Appendicitis - Pain in lower right quadrant</option>
+            <option>UTI - Lower abdominal pain with burning urination</option>
+            <option>Gall stones - Severe Pain in right Upper quadrant</option>
+            <option>Gastritis - Pain above the umbilicus</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="abdominalTreatment">Treatment</label>
+          <select id="abdominalTreatment">
+            <option value="">— Select —</option>
+            <option>Referral to Higher Centre</option>
+            <option>T.Ranitidine / T.Domperidone</option>
+            <option>T.Dicyclomine</option>
+          </select>
+        </div>
 
-      <div class="subhead">Pain</div>
-      <div class="field">
-        <label for="painComplaint">Complaints</label>
-        <select id="painComplaint">
-          <option value="">— Select —</option>
-          <option>Back Pain</option>
-          <option>Knee pain</option>
-          <option>Multiple Joint Pain</option>
-          <option>Any other Pain</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="painTreatment">Treatment</label>
-        <select id="painTreatment">
-          <option value="">— Select —</option>
-          <option>T.Paracetamol</option>
-          <option>T.Calcium</option>
-        </select>
-      </div>
+      <div class="subhead">Long standing Pain</div>
+        <div class="field">
+          <label for="painComplaint">Complaints</label>
+          <select id="painComplaint">
+            <option value="">— Select —</option>
+            <option>Back Pain</option>
+            <option>OA - Knee pain</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="painTreatment">Treatment</label>
+          <select id="painTreatment">
+            <option value="">— Select —</option>
+            <option>T.Paracetamol</option>
+            <option>T.Calcium</option>
+            <option>T.Diclofenac</option>
+            <option>Turpentine Oil</option>
+            <option>Vitamin D3</option>
+            <option>Ibuprofen</option>
+          </select>
+        </div>
 
       <div class="subhead">Chest Pain</div>
-      <div class="field">
-        <label for="chestPainComplaint">Complaints</label>
-        <select id="chestPainComplaint">
-          <option value="">— Select —</option>
-          <option>Sweating with Palpitation</option>
-          <option>Severe Pain in the Chest</option>
-          <option>Pain radiating to Shoulder Neck &amp; Arms</option>
-          <option>Shortness of Breath/Breathing difficulty</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="chestPainTreatment">Treatment</label>
-        <select id="chestPainTreatment">
-          <option value="">— Select —</option>
-          <option>T.Antacid</option>
-          <option>Cardiac Loading Dose</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Cardiac Cases managed with loading dose and referred</label>
-        <fieldset class="pillgroup" data-name="cardiacManaged"><legend>Cardiac managed</legend>
-          <label class="pill"><input type="radio" name="cardiacManaged" value="Yes">Yes</label>
-          <label class="pill"><input type="radio" name="cardiacManaged" value="No">No</label>
-        </fieldset>
-      </div>
+        <div class="field">
+          <label for="chestPainComplaint">Complaints</label>
+          <select id="chestPainComplaint">
+            <option value="">— Select —</option>
+            <option>Severe Pain in the Chest</option>
+            <option>Pain radiating to Shoulder, Neck &amp; Arms</option>
+            <option>Sweating with Palpitation</option>
+            <option>Shortness of Breath/Breathing difficulty</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="chestPainTreatment">Treatment</label>
+          <select id="chestPainTreatment">
+            <option value="">— Select —</option>
+            <option>T.Antacid</option>
+            <option>Cardiac Loading Dose</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Cardiac Cases managed with loading dose and referred</label>
+          <fieldset class="pillgroup" data-name="cardiacManaged"><legend>Cardiac managed</legend>
+            <label class="pill"><input type="radio" name="cardiacManaged" value="Yes">Yes</label>
+            <label class="pill"><input type="radio" name="cardiacManaged" value="No">No</label>
+          </fieldset>
+        </div>
 
       <div class="subhead">Eye</div>
-      <div class="field">
-        <label for="eyeComplaint">Complaints</label>
-        <select id="eyeComplaint">
-          <option value="">— Select —</option>
-          <option>Red Eye</option>
-          <option>Watering Eye</option>
-          <option>Pain Eye</option>
-          <option>Cataract</option>
-          <option>Defective vision</option>
-          <option>Refractive Error</option>
-          <option>Foreign body</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="eyeTreatment">Treatment</label>
-        <select id="eyeTreatment">
-          <option value="">— Select —</option>
-          <option>Gentamicin</option>
-          <option>Ciprofloxacin</option>
-          <option>Carboxymethyl cellulose</option>
-        </select>
-      </div>
+        <div class="field">
+          <label for="eyeComplaint">Complaints</label>
+          <select id="eyeComplaint">
+            <option value="">— Select —</option>
+            <option>Redness</option>
+            <option>Watering</option>
+            <option>Pain / Irritation</option>
+            <option>Cataract</option>
+            <option>Defective vision</option>
+            <option>Refractive Error</option>
+            <option>Foreign body</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="eyeTreatment">Treatment</label>
+          <select id="eyeTreatment">
+            <option value="">— Select —</option>
+            <option>Gentamicin eye drops</option>
+            <option>Ciprofloxacin eye drops</option>
+            <option>Carboxymethyl cellulose eye drops</option>
+          </select>
+        </div>
 
       <div class="subhead">ENT</div>
-      <div class="field">
-        <label for="entComplaint">Complaints</label>
-        <select id="entComplaint">
-          <option value="">— Select —</option>
-          <option>Ear Pain</option>
-          <option>Ear Discharge</option>
-          <option>Foreign Body</option>
-          <option>Ear Wax</option>
-          <option>Asso.with Sinusitis</option>
-          <option>Asso.with Allergic Rhinitis</option>
-          <option>Asso.with Throat Pain</option>
-          <option>Tonsillitis</option>
-          <option>Hard of Hearing</option>
-          <option>Loss of Hearing</option>
-          <option>Fever with Throat pain</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="entTreatment">Treatment</label>
-        <select id="entTreatment">
-          <option value="">— Select —</option>
-          <option>CPM</option>
-          <option>Levocetirizine</option>
-          <option>Paracitamol</option>
-          <option>Ciprofloxacin drops</option>
-          <option>Amoxicillin</option>
-          <option>Co-trimoxazole</option>
-          <option>Erythromicin</option>
-        </select>
-      </div>
+        <div class="field">
+          <label for="entComplaint">Complaints</label>
+          <select id="entComplaint">
+            <option value="">— Select —</option>
+            <option>Ear Pain</option>
+            <option>Ear Discharge</option>
+            <option>Foreign Body</option>
+            <option>Ear Wax</option>
+            <option>Asso.with Sinusitis</option>
+            <option>Asso.with Allergic Rhinitis</option>
+            <option>Asso.with Throat Pain</option>
+            <option>Tonsillitis</option>
+            <option>Hard of Hearing</option>
+            <option>Loss of Hearing</option>
+            <option>Fever with Throat pain</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="entTreatment">Treatment</label>
+          <select id="entTreatment">
+            <option value="">— Select —</option>
+            <option>CPM or Cetirizine</option>
+            <option>Paracetamol</option>
+            <option>Ciprofloxacin</option>
+            <option>Amoxicillin</option>
+            <option>Co-trimoxazole</option>
+            <option>Erythromicin</option>
+          </select>
+        </div>
 
       <div class="subhead">Mental Health</div>
-      <div class="field">
-        <label for="mentalIllness">Mental Illness</label>
-        <select id="mentalIllness">
-          <option value="">— Select —</option>
-          <option>Feeling Sad / Worry</option>
-          <option>Sleep Disturbance</option>
-          <option>Fear / Anxiety</option>
-          <option>Irritability</option>
-          <option>Mood Swings</option>
-          <option>Memory Issues / Loss</option>
-          <option>Suicide thoughts</option>
-          <option>Mentally Retard(MR) Child</option>
-          <option>Autism</option>
-          <option>Developmental delay</option>
-          <option>Down syndrome</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Referred to Block Mental Health Psychiatrist</label>
-        <fieldset class="pillgroup" data-name="mentalReferred"><legend>Mental health referred</legend>
-          <label class="pill"><input type="radio" name="mentalReferred" value="Yes">Yes</label>
-          <label class="pill"><input type="radio" name="mentalReferred" value="No">No</label>
-        </fieldset>
-      </div>
+        <div class="field">
+          <label for="mentalIllness">Mental Illness</label>
+          <select id="mentalIllness">
+            <option value="">— Select —</option>
+            <option>Feeling Sad / Worry</option>
+            <option>Sleep Disturbance</option>
+            <option>Fear / Anxiety</option>
+            <option>Irritability</option>
+            <option>Mood Swings</option>
+            <option>Memory Issues / Loss</option>
+            <option>Suicide thoughts</option>
+            <option>Mentally Retard(MR) Child</option>
+            <option>Autism</option>
+            <option>Developmental delay</option>
+            <option>Down syndrome</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Referred to Block Mental Health Psychiatrist</label>
+          <fieldset class="pillgroup" data-name="mentalReferred"><legend>Mental health referred</legend>
+            <label class="pill"><input type="radio" name="mentalReferred" value="Yes">Yes</label>
+            <label class="pill"><input type="radio" name="mentalReferred" value="No">No</label>
+          </fieldset>
+        </div>
+
+      <div class="subhead">Geriatric</div>
+        <div class="field">
+          <label for="geriatricComplaint">Complaints</label>
+          <select id="geriatricComplaint">
+            <option value="">— Select —</option>
+            <option>Vision</option>
+            <option>Hearing</option>
+            <option>Weight loss</option>
+            <option>Constipation</option>
+            <option>Sleeplessness</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="geriatricTreatment">Treatments</label>
+          <select id="geriatricTreatment">
+            <option value="">— Select —</option>
+            <option>Counselling</option>
+            <option>T.Bisacodyl</option>
+            <option>Ispaghula powder</option>
+            <option>Nutritional Assessment</option>
+            <option>Referral to PHC MO</option>
+            <option>Referral to DHQH/MCH</option>
+            <option>Mode of referral - attender/108</option>
+            <option>Functional Assessment Score done</option>
+          </select>
+        </div>
+
+      <div class="subhead">Palliative</div>
+        <div class="field">
+          <label for="palliativeComplaint">Complaints</label>
+          <select id="palliativeComplaint">
+            <option value="">— Select —</option>
+            <option>Pain</option>
+            <option>Sleeplessness</option>
+            <option>Loss of Functional Capacity</option>
+            <option>Breathlessness</option>
+            <option>Nausea</option>
+            <option>Constipation</option>
+            <option>Anxiety &amp; Depression</option>
+            <option>Stroke rehabilitation</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="palliativeTreatment">Treatments</label>
+          <select id="palliativeTreatment">
+            <option value="">— Select —</option>
+            <option>Medication - Paracetamol / NSAIDs</option>
+            <option>Ispaghula powder</option>
+            <option>Non pharmacological treatments - Massage / Yoga / Aroma therapy / Music therapy</option>
+            <option>Counselling &amp; added to PSG group</option>
+            <option>T.Ondansetron / T.Domperidone</option>
+            <option>Referral to PHC - MO</option>
+            <option>Referral to Specialist</option>
+            <option>Link with Palliative Care Vehicle Team</option>
+          </select>
+        </div>
     </div>
   </section>
 
@@ -1081,15 +1239,33 @@
 
       <div class="subhead">Injury / Emergency</div>
       <div class="field">
-        <label>Injury / Emergency</label>
+        <label for="injuryType">Complaints</label>
         <select id="injuryType">
-          <option value="">—</option>
+          <option value="">— Select —</option>
           <option>Injury/Accident</option>
           <option>Snake Bite</option>
           <option>Insect bite</option>
           <option>Scorpion Sting</option>
           <option>Burns</option>
           <option>Poisoning</option>
+          <option>Stroke</option>
+          <option>Fits</option>
+          <option>Hypoglycemia</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="injuryTreatment">Treatments</label>
+        <select id="injuryTreatment">
+          <option value="">— Select —</option>
+          <option>Silver Sulfadiazine</option>
+          <option>Activated Charcoal</option>
+          <option>Adrenaline</option>
+          <option>Betamethasone</option>
+          <option>Pheniramine Maleate</option>
+          <option>Inj.NS</option>
+          <option>Dextrose</option>
+          <option>Atropine</option>
+          <option>Hydrocortisone</option>
         </select>
       </div>
       <div class="field">
@@ -1120,6 +1296,14 @@
       <div class="chev">▾</div>
     </div>
     <div class="step-body">
+      <div class="field">
+        <label for="ncdScreening">Screening</label>
+        <select id="ncdScreening">
+          <option value="">— Select —</option>
+          <option>Annual Screening</option>
+          <option>Followup Screening</option>
+        </select>
+      </div>
       <div class="field">
         <label for="ncdScreeningType">Screening type</label>
         <select id="ncdScreeningType">
@@ -1180,8 +1364,8 @@
 
       <div class="subhead">Cervical Cancer Screening</div>
       <div class="field">
-        <label>Visual inspection Acid Screening</label>
-        <fieldset class="pillgroup" data-name="cervicalScreening"><legend>Visual inspection Acid Screening</legend>
+        <label>Visual inspection with Acetic Acid (VIA)</label>
+        <fieldset class="pillgroup" data-name="cervicalScreening"><legend>Visual inspection with Acetic Acid (VIA)</legend>
           <label class="pill"><input type="radio" name="cervicalScreening" value="Yes">Yes</label>
           <label class="pill"><input type="radio" name="cervicalScreening" value="No">No</label>
         </fieldset>
@@ -1204,10 +1388,51 @@
     </div>
   </section>
 
-  <!-- STEP 7: TB AND LEPROSY -->
+  <!-- STEP 7: WOMEN HEALTH VOLUNTEER -->
   <section class="step" data-step="7">
     <div class="step-head" onclick="toggleStep(this)">
       <div class="step-num">7</div>
+      <div class="titles">
+        <h2>Women Health Volunteer</h2>
+        <p>Suspected cases, community-level screening invites</p>
+      </div>
+      <div class="chev">▾</div>
+    </div>
+    <div class="step-body">
+      <div class="subhead">Suspected Cases (No. of Cases)</div>
+      <div class="field">
+        <label for="whvHT">HT</label>
+        <input type="number" id="whvHT">
+      </div>
+      <div class="field">
+        <label for="whvDM">DM</label>
+        <input type="number" id="whvDM">
+      </div>
+      <div class="field">
+        <label for="whvBoth">Both (HT &amp; DM)</label>
+        <input type="number" id="whvBoth">
+      </div>
+
+      <div class="subhead">Invited Community Level</div>
+      <div class="field">
+        <label for="whvOralScreening">Oral Screening</label>
+        <input type="number" id="whvOralScreening">
+      </div>
+      <div class="field">
+        <label for="whvSbeCbeScreening">SBE / CBE Screening</label>
+        <input type="number" id="whvSbeCbeScreening">
+      </div>
+      <div class="field">
+        <label for="whvViaScreening">VIA Screening</label>
+        <input type="number" id="whvViaScreening">
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 8: TB AND LEPROSY -->
+  <section class="step" data-step="8">
+    <div class="step-head" onclick="toggleStep(this)">
+      <div class="step-num">8</div>
       <div class="titles">
         <h2>TB and Leprosy</h2>
         <p>Screening, treatment dates, contact screening</p>
@@ -1216,6 +1441,18 @@
     </div>
     <div class="step-body">
       <div class="subhead">TB</div>
+      <div class="field">
+        <label for="tbSymptoms">Symptoms</label>
+        <select id="tbSymptoms">
+          <option value="">— Select —</option>
+          <option>Loss of Weight more than 10%</option>
+          <option>Evening fever</option>
+          <option>Anorexia (Loss of Appetite)</option>
+          <option>Cough more than 2 weeks</option>
+          <option>Sputum with Blood</option>
+          <option>Difficulty in Breathing</option>
+        </select>
+      </div>
       <div class="field">
         <label for="tbScreening">TB screening</label>
         <select id="tbScreening">
@@ -1247,8 +1484,30 @@
         <label for="tbContactTreatmentDate">Contact Screening Treatment initiated date</label>
         <input type="date" id="tbContactTreatmentDate">
       </div>
+      <div class="field">
+        <label for="tbFollowup">Followup</label>
+        <select id="tbFollowup">
+          <option value="">— Select —</option>
+          <option>Taking drugs regularly</option>
+          <option>Not Taking drugs regularly</option>
+          <option>Any Complications</option>
+          <option>Referral</option>
+        </select>
+      </div>
 
       <div class="subhead">Leprosy</div>
+      <div class="field">
+        <label for="leprosySymptoms">Symptoms</label>
+        <select id="leprosySymptoms">
+          <option value="">— Select —</option>
+          <option>Hypo Pigmented - Single Lesions</option>
+          <option>Hypo Pigmented - Multiple Lesions</option>
+          <option>Loss of sensation</option>
+          <option>Wristdrop / footdrop</option>
+          <option>Thickened nerves</option>
+          <option>Compressed Nasal bone</option>
+        </select>
+      </div>
       <div class="field">
         <label for="leprosyScreening">Leprosy screening</label>
         <select id="leprosyScreening">
@@ -1280,13 +1539,23 @@
         <label for="leprosyContactTreatmentDate">Contact Screening Treatment initiated date</label>
         <input type="date" id="leprosyContactTreatmentDate">
       </div>
+      <div class="field">
+        <label for="leprosyFollowup">Followup</label>
+        <select id="leprosyFollowup">
+          <option value="">— Select —</option>
+          <option>Taking drugs regularly</option>
+          <option>Not Taking drugs regularly</option>
+          <option>Any Complications</option>
+          <option>Referral</option>
+        </select>
+      </div>
     </div>
   </section>
 
-  <!-- STEP 8: LAB DIAGNOSIS -->
-  <section class="step" data-step="8">
+  <!-- STEP 9: LAB DIAGNOSIS -->
+  <section class="step" data-step="9">
     <div class="step-head" onclick="toggleStep(this)">
-      <div class="step-num">8</div>
+      <div class="step-num">9</div>
       <div class="titles">
         <h2>Lab Diagnosis</h2>
         <p>Hb, blood sugar, urine tests, AN mother screening</p>
@@ -1337,6 +1606,22 @@
           <option>++++</option>
         </select>
       </div>
+      <div class="field">
+        <label for="viaAceticAcid">Visual Inspection – Acetic Acid</label>
+        <select id="viaAceticAcid">
+          <option value="">— Select —</option>
+          <option>Positive</option>
+          <option>Negative</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="dengue">Dengue</label>
+        <select id="dengue">
+          <option value="">— Select —</option>
+          <option>Positive</option>
+          <option>Negative</option>
+        </select>
+      </div>
 
       <div class="subhead">For AN Pregnant Mothers</div>
       <div class="field">
@@ -1366,10 +1651,10 @@
     </div>
   </section>
 
-  <!-- STEP 9: INVESTIGATIONS BY HEALTH INSPECTOR -->
-  <section class="step" data-step="9">
+  <!-- STEP 10: INVESTIGATIONS BY HEALTH INSPECTOR -->
+  <section class="step" data-step="10">
     <div class="step-head" onclick="toggleStep(this)">
-      <div class="step-num">9</div>
+      <div class="step-num">10</div>
       <div class="titles">
         <h2>Investigations by Health Inspector</h2>
         <p>Iodine, water, sputum, smear tests</p>
@@ -1404,10 +1689,10 @@
     </div>
   </section>
 
-  <!-- STEP 10: KIT A & KIT B -->
-  <section class="step" data-step="10">
+  <!-- STEP 11: KIT A & KIT B -->
+  <section class="step" data-step="11">
     <div class="step-head" onclick="toggleStep(this)">
-      <div class="step-num">10</div>
+      <div class="step-num">11</div>
       <div class="titles">
         <h2>Kit A &amp; Kit B</h2>
         <p>Calcium, IFA, WIFS, iron syrup, Kit B drugs</p>
@@ -1490,10 +1775,10 @@
     </div>
   </section>
 
-  <!-- STEP 11: ESSENTIAL DRUGS -->
-  <section class="step" data-step="11">
+  <!-- STEP 12: ESSENTIAL DRUGS -->
+  <section class="step" data-step="12">
     <div class="step-head" onclick="toggleStep(this)">
-      <div class="step-num">11</div>
+      <div class="step-num">12</div>
       <div class="titles">
         <h2>Essential Drugs</h2>
         <p>HT/DM/cardiac/antibiotic/other EDL, family welfare</p>
@@ -1573,6 +1858,7 @@
           <option>Furosemide</option>
           <option>Albendazole</option>
           <option>B Complex</option>
+          <option>Vitamin A</option>
         </select>
       </div>
       <div class="field full">
@@ -1590,10 +1876,10 @@
     </div>
   </section>
 
-  <!-- STEP 12: PORTAL ENTRY -->
-  <section class="step" data-step="12">
+  <!-- STEP 13: PORTAL ENTRY -->
+  <section class="step" data-step="13">
     <div class="step-head" onclick="toggleStep(this)">
-      <div class="step-num">12</div>
+      <div class="step-num">13</div>
       <div class="titles">
         <h2>Portal Entry <span class="req">*</span></h2>
         <p>Performance details — at least one is required</p>
@@ -1880,18 +2166,25 @@ function toggleStep(headEl){
 const FIELD_IDS = [
   'pDate','uniqueId','pName','patientAge','pGender','pPhone','pType','height','weight',
   'cphcService','consultType',
-  'feverComplaint','feverTreatment','diarrheaComplaint','diarrheaTreatment',
+  'feverComplaint','feverTreatment',
+  'coughColdComplaint','coughColdTreatment',
+  'wheezingComplaint','wheezingTreatment',
+  'headacheComplaint','headacheTreatment',
+  'skinLesionsComplaint','skinLesionsTreatment',
+  'diarrheaComplaint','diarrheaTreatment',
   'vomitingComplaint','vomitingTreatment','abdominalComplaint','abdominalTreatment',
   'painComplaint','painTreatment','chestPainComplaint','chestPainTreatment',
   'eyeComplaint','eyeTreatment','entComplaint','entTreatment','mentalIllness',
-  'dogCategory','arvGiven','injuryType',
-  'ncdScreeningType','ncdFollowupDetail',
+  'geriatricComplaint','geriatricTreatment','palliativeComplaint','palliativeTreatment',
+  'dogCategory','arvGiven','injuryType','injuryTreatment',
+  'ncdScreening','ncdScreeningType','ncdFollowupDetail',
   'oralScreening','oralResult','breastScreening','breastResult','cervicalResult',
-  'tbScreening','tbTreatmentDate','tbContactScreening','tbContactTreatmentDate',
-  'leprosyScreening','leprosyTreatmentDate','leprosyContactScreening','leprosyContactTreatmentDate',
+  'tbSymptoms','tbScreening','tbTreatmentDate','tbContactScreening','tbContactTreatmentDate','tbFollowup',
+  'leprosySymptoms','leprosyScreening','leprosyTreatmentDate','leprosyContactScreening','leprosyContactTreatmentDate','leprosyFollowup',
+  'whvHT','whvDM','whvBoth','whvOralScreening','whvSbeCbeScreening','whvViaScreening',
   'bp','temp','pulseRate','respRate','spo2',
   'iodineTests','waterTests','sputumAfb','peripheralSmear','smearFilaria','investigationOthers',
-  'upt','hbValue','anemia','bloodSugar','urineAlbumin','urineSugar','hiv','hbsag','vdrl',
+  'upt','hbValue','anemia','bloodSugar','urineAlbumin','urineSugar','viaAceticAcid','dengue','hiv','hbsag','vdrl',
   'calciumGiven','ifaGiven',
   'htDrugs','dmDrugs','cardiacDrugs','antibioticDrugs','otherEdlDrugs','familyWelfare'
 ];
