@@ -471,6 +471,193 @@
     XLSX.utils.book_append_sheet(wb, ws, 'District Report');
     XLSX.writeFile(wb, `District_Report_${date}.xlsx`);
   }
+
+  /* ---------- Numerical Report (HUD Wise, block-wise) ---------- */
+  const NUMERICAL_REPORT_BLOCKS = ['Sirkali','Kollidam','Kuttalam','Mayiladuthurai','Sembanarkovil'];
+
+  const NUMERICAL_REPORT_HEADERS = [
+    'Block',
+    'No.of HWC-HSCs','No.of HWC-HSCs Reported','No.of HWC-HSCs Not Reported','No.of Patients',
+    'Type of Consultation - MLHP','Type of Consultation - eSanjeevani',
+    'No.of Fever Cases','No.of Cough & Cold Cases','No.of Wheezing Cases','No.of Headache Cases',
+    'No.of Skin lesions Cases','No.of Diarrhea/Dysentry Cases','No.of Vomiting Cases',
+    'No.of Abdominal Pain cases','No.of Long standing Pain Cases','No.of Chest Pain cases',
+    'No.of Cardiac Cases managed with loading dose and referred','No.of Eye Cases','No.of ENT Cases',
+    'No.of Mental Illness Cases','No.of MNS cases Referred to Psychiatrist',
+    'No.of Geriatric Cases','No.of Palliative Cases',
+    'No.of Dog bite Cases','No.of Dog bite Cases referred for Immunoglobulin',
+    'No.of Injury/Emergency Cases','No.of Emergency cases given Inj.Td','No.of Emergency cases referred to Higher Facility',
+    'No of new NCD Screening','No of known NCD Screening cases','No of Follow up cases',
+    'No.of Oral Screening Cases','No.of Positive Cases (Oral)',
+    'No.of SBE Screening Cases','No.of CBE Screening Cases','No.of Positive Cases (Breast)',
+    'No.of VIA Screening Cases','No.of Positive Cases (Cervical)','No.of Cases referred to Higher Facility (Cervical)',
+    'No.of TB Symptom cases','No.of TB screening cases Positive','No.of Positive cases Treatment initiated (TB)',
+    'No.of positive cases, Contact Screening done (TB)','No.of Contact Screening cases positive (TB)',
+    'No.of Positive Contact Screening Treatment initiated (TB)','No.of Cases Followup (TB)',
+    'No.of Symptom cases (Leprosy)','No.of Leprosy screening Positive','No.of Positive cases Treatment initiated (Leprosy)',
+    'No.of positive cases, Contact Screening done (Leprosy)','No.of Contact Screening cases positive (Leprosy)',
+    'No.of Positive Contact Screening Treatment initiated (Leprosy)','No.of Cases Followup (Leprosy)',
+    'No.of Urine Pregnancy Test done','No of UPT positive','No.of Hemoglobin test done','No.of Anemia Positive Cases',
+    'No.of Blood Sugar test done','No.of Urine Albumin test done','No.of Urine Sugar test done',
+    'No.of Visual Inspection Acetic Acid test done','No.of Dengue test done',
+    'No.of HIV test done','No.of HbsAg test done','No.of VDRL test done',
+    'No. of Iodine in salt test done','No.of Water testing for Coliform test done',
+    'No.of Sputum for AFB test done','Peripheral smear for Malaria','No.of Smear for Filaria test done',
+    'Others if any (Diagnostics)',
+    'WHV - Suspected HT','WHV - Suspected DM','WHV - Suspected Both (HT & DM)',
+    'WHV - Invited Oral Screening','WHV - Invited SBE/CBE Screening','WHV - Invited VIA Screening',
+    'Calcium Carbonate','IFA Large','Junior WIFS','Senior WIFS','Iron Syrup','Others (Kit A & B)',
+    'HT Drugs','DM Drugs','Cardiac Drugs','Antibiotic Drugs','Other EDL drugs','Family Welfare drugs',
+    'AAM Portal','PICME','MTM','HMIS','IHIP'
+  ];
+
+  function countBlockHscs(block){
+    const phcs = HIERARCHY[block] || {};
+    let n = 0;
+    Object.keys(phcs).forEach(phc=> n += phcs[phc].length);
+    return n;
+  }
+  function countNonBlank(rows, field){
+    return rows.filter(r=> r[field] !== undefined && r[field] !== null && String(r[field]).trim() !== '').length;
+  }
+  function countEq(rows, field, value){
+    return rows.filter(r=> r[field] === value).length;
+  }
+  function countStartsWith(rows, field, prefix){
+    return rows.filter(r=> typeof r[field] === 'string' && r[field].startsWith(prefix)).length;
+  }
+  function sumField(rows, field){
+    return rows.reduce((sum, r)=>{
+      const n = Number(r[field]);
+      return sum + (isNaN(n) ? 0 : n);
+    }, 0);
+  }
+
+  function buildNumericalReportRow(block, rows){
+    const totalHscs = countBlockHscs(block);
+    const reportedHscs = new Set(rows.map(r=> r.hsc).filter(Boolean)).size;
+    return [
+      block,
+      totalHscs,
+      reportedHscs,
+      totalHscs - reportedHscs,
+      countNonBlank(rows,'pName'),
+      countEq(rows,'consultType','MLHP'),
+      countEq(rows,'consultType','eSanjeevani'),
+      countNonBlank(rows,'feverComplaint'),
+      countNonBlank(rows,'coughColdComplaint'),
+      countNonBlank(rows,'wheezingComplaint'),
+      countNonBlank(rows,'headacheComplaint'),
+      countNonBlank(rows,'skinLesionsComplaint'),
+      countNonBlank(rows,'diarrheaComplaint'),
+      countNonBlank(rows,'vomitingComplaint'),
+      countNonBlank(rows,'abdominalComplaint'),
+      countNonBlank(rows,'painComplaint'),
+      countNonBlank(rows,'chestPainComplaint'),
+      countEq(rows,'cardiacManaged','Yes'),
+      countNonBlank(rows,'eyeComplaint'),
+      countNonBlank(rows,'entComplaint'),
+      countNonBlank(rows,'mentalIllness'),
+      countEq(rows,'mentalReferred','Yes'),
+      countNonBlank(rows,'geriatricComplaint'),
+      countNonBlank(rows,'palliativeComplaint'),
+      countNonBlank(rows,'dogCategory'),
+      countEq(rows,'arvCategory3Referred','Yes'),
+      countNonBlank(rows,'injuryType'),
+      countEq(rows,'injTd','Yes'),
+      countEq(rows,'emergencyReferred','Yes'),
+      countStartsWith(rows,'ncdScreeningType','New'),
+      countStartsWith(rows,'ncdScreeningType','Known'),
+      countNonBlank(rows,'ncdFollowupDetail'),
+      countNonBlank(rows,'oralScreening'),
+      countEq(rows,'oralResult','Positive'),
+      countEq(rows,'breastScreening','SBE'),
+      countEq(rows,'breastScreening','CBE'),
+      countEq(rows,'breastResult','Positive'),
+      countEq(rows,'cervicalScreening','Yes'),
+      countEq(rows,'cervicalResult','Positive'),
+      countEq(rows,'cervicalReferred','Yes'),
+      countNonBlank(rows,'tbSymptoms'),
+      countEq(rows,'tbScreening','Positive'),
+      countNonBlank(rows,'tbTreatmentDate'),
+      countEq(rows,'tbContactDone','Yes'),
+      countEq(rows,'tbContactScreening','Positive'),
+      countNonBlank(rows,'tbContactTreatmentDate'),
+      countNonBlank(rows,'tbFollowup'),
+      countNonBlank(rows,'leprosySymptoms'),
+      countEq(rows,'leprosyScreening','Positive'),
+      countNonBlank(rows,'leprosyTreatmentDate'),
+      countEq(rows,'leprosyContactDone','Yes'),
+      countEq(rows,'leprosyContactScreening','Positive'),
+      countNonBlank(rows,'leprosyContactTreatmentDate'),
+      countNonBlank(rows,'leprosyFollowup'),
+      countNonBlank(rows,'upt'),
+      countEq(rows,'upt','Positive'),
+      countNonBlank(rows,'hbValue'),
+      countNonBlank(rows,'anemia'),
+      countNonBlank(rows,'bloodSugar'),
+      countNonBlank(rows,'urineAlbumin'),
+      countNonBlank(rows,'urineSugar'),
+      countNonBlank(rows,'viaAceticAcid'),
+      countNonBlank(rows,'dengue'),
+      countNonBlank(rows,'hiv'),
+      countNonBlank(rows,'hbsag'),
+      countNonBlank(rows,'vdrl'),
+      sumField(rows,'iodineTests'),
+      sumField(rows,'waterTests'),
+      countNonBlank(rows,'sputumAfb'),
+      countNonBlank(rows,'peripheralSmear'),
+      countNonBlank(rows,'smearFilaria'),
+      '',
+      sumField(rows,'whvHT'),
+      sumField(rows,'whvDM'),
+      sumField(rows,'whvBoth'),
+      sumField(rows,'whvOralScreening'),
+      sumField(rows,'whvSbeCbeScreening'),
+      sumField(rows,'whvViaScreening'),
+      '','','','','','',
+      '','','','','','',
+      countEq(rows,'aamPortal','Yes'),
+      countEq(rows,'picme','Yes'),
+      countEq(rows,'mtm','Yes'),
+      countEq(rows,'hmis','Yes'),
+      countEq(rows,'ihip','Yes')
+    ];
+  }
+
+  document.getElementById('numReportDate').value = todayStr();
+
+  document.getElementById('numReportBtn').addEventListener('click', async ()=>{
+    const date = document.getElementById('numReportDate').value;
+    const out = document.getElementById('numReportOutput');
+    if(!date){ out.innerHTML = '<div class="empty-note">Pick a date.</div>'; return; }
+    out.innerHTML = '<div class="empty-note">Generating…</div>';
+
+    const q = query(collection(db, 'entries'), where('pDate','==',date));
+    const snap = await getDocs(q);
+    const rowsByBlock = {};
+    NUMERICAL_REPORT_BLOCKS.forEach(b=> rowsByBlock[b] = []);
+    snap.forEach(d=>{
+      const r = d.data();
+      if(rowsByBlock[r.block]) rowsByBlock[r.block].push(r);
+    });
+
+    const aoa = [NUMERICAL_REPORT_HEADERS];
+    NUMERICAL_REPORT_BLOCKS.forEach(block=>{
+      aoa.push(buildNumericalReportRow(block, rowsByBlock[block]));
+    });
+
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+    for(let c = 0; c < NUMERICAL_REPORT_HEADERS.length; c++){
+      const cellRef = XLSX.utils.encode_cell({ r:0, c });
+      if(ws[cellRef]) ws[cellRef].s = { font: { bold: true } };
+    }
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Numerical Report');
+    XLSX.writeFile(wb, `Numerical_Report_${date}.xlsx`);
+    out.innerHTML = `<div class="empty-note">Downloaded Numerical_Report_${date}.xlsx</div>`;
+  });
 </script>
 
 <header class="top">
@@ -510,6 +697,16 @@
         <button id="dashLoadBtn">Load Report</button>
       </div>
       <div id="dashOutput"></div>
+    </div>
+
+    <div class="card">
+      <h2>Numerical Report</h2>
+      <p class="sub">Pick a date to download the block-wise numerical (HUD Wise) report for that day.</p>
+      <div class="dash-controls">
+        <div class="field"><label>Date</label><input type="date" id="numReportDate"></div>
+        <button id="numReportBtn">⬇ Generate Report</button>
+      </div>
+      <div id="numReportOutput"></div>
     </div>
 
     <div class="card">
