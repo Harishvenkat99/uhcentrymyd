@@ -370,14 +370,13 @@
       html += `<h3 style="margin:18px 0 8px;">Submission Status for ${from}</h3>
       <div class="dash-stats">
         <div class="stat-box good"><div class="stat-num">${submitted.length}</div><div class="stat-label">HSCs Submitted</div></div>
-        <div class="stat-box bad"><div class="stat-num">${missing.length}</div><div class="stat-label">HSCs Missing</div></div>
+        <div class="stat-box bad"><div class="stat-num">${missing.length}</div><div class="stat-label">HSCs Not Reported</div></div>
       </div>
-      <button class="btn" id="downloadMissingBtn" style="background:var(--amber); color:#fff; margin-top:10px;">⬇ Download Missing HSC List</button>
+      <button class="btn" id="downloadMissingBtn" style="background:var(--amber); color:#fff; margin-top:10px;">⬇ Download Not Reported HSC List</button>
       <button class="btn" id="downloadExcelBtn" style="background:var(--teal); color:#fff; margin-top:10px; margin-left:8px;">⬇ Download Excel Report</button>
-      <table style="margin-top:14px;"><thead><tr><th>HSC</th><th>PHC</th><th>Block</th><th>Status</th></tr></thead><tbody>`;
-      [...missing, ...submitted].forEach(h=>{
-        const ok = submittedHSCs.has(h.hsc);
-        html += `<tr><td>${h.hsc}</td><td>${h.phc}</td><td>${h.block}</td><td>${ok ? '✅ Submitted' : '❌ Missing'}</td></tr>`;
+      <table style="margin-top:14px;"><thead><tr><th>HSC</th><th>PHC</th><th>Block</th></tr></thead><tbody>`;
+      missing.forEach(h=>{
+        html += `<tr><td>${h.hsc}</td><td>${h.phc}</td><td>${h.block}</td></tr>`;
       });
       html += '</tbody></table>';
     } else {
